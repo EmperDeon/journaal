@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:journal/states/entries_notifier.dart';
+import 'package:journal/models/entries_model.dart';
+import 'package:journal/models/entry.dart';
 import 'package:provider/provider.dart';
 
 class EntryScreen extends StatefulWidget {
@@ -49,14 +50,14 @@ class _EntryScreenState extends State<EntryScreen> {
   EntriesModel model;
   int index;
 
-  String title, body;
+  String _title, _body;
   final TextEditingController titleController = TextEditingController(),
                               bodyController = TextEditingController();
 
   void onSave() {
-    Entry entry = model.getByIndex(index);
-    entry.title = title;
-    entry.body = body;
+    Entry entry = model.getByIndex(index).copy();
+    entry.title = titleController.text;
+    entry.body = bodyController.text;
     model.setEntryAt(index, entry);
   }
 
@@ -71,16 +72,21 @@ class _EntryScreenState extends State<EntryScreen> {
   Widget build(BuildContext context) {
     model = Provider.of<EntriesModel>(context);
     index = ModalRoute.of(context).settings.arguments;
-    Entry entry = model.getByIndex(index);
-    title = entry.title;
-    body = entry.body;
+    Entry entry = model.getByIndex(index).copy();
+    _title = entry.title;
+    _body = entry.body;
 
-    if (titleController.text.isEmpty) titleController.text = title;
-    if (bodyController.text.isEmpty) bodyController.text = body;
+    if (titleController.text.isEmpty) titleController.text = _title;
+    if (bodyController.text.isEmpty) bodyController.text = _body;
 
-    titleController.addListener(() { title = titleController.text; });
-    bodyController.addListener(() { body = bodyController.text; });
+    titleController.addListener(() {
+      _title = titleController.text;
+    });
 
-    return widget.build(context, titleController, bodyController, onSave, title, body);
+    bodyController.addListener(() {
+      _body = bodyController.text;
+    });
+
+    return widget.build(context, titleController, bodyController, onSave, _title, _body);
   }
 }

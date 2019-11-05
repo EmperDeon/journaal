@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:journal/states/entries_notifier.dart';
+import 'package:journal/models/entries_model.dart';
+import 'package:journal/models/entry.dart';
 import 'package:provider/provider.dart';
 
 class EntriesScreen extends StatelessWidget {
@@ -13,15 +14,11 @@ class EntriesScreen extends StatelessWidget {
         title: new Text("Test"),
       ),
       body: new Center(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: 12)), // Acts as margin
-            SliverList(
-                delegate: SliverChildBuilderDelegate(
-                    (context, index) => _EntryItem(index),
-                    childCount: model.length)),
-          ]
-        ),
+        child: ListView.separated(
+          itemCount: model.length,
+          itemBuilder: (_c, index) => _EntryItem(index),
+          separatorBuilder: (_c, _i) => Divider()
+        )
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: () {
