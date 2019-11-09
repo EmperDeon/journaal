@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:journal/util/storable_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Storage {
+class Storage extends ChangeNotifier{
   // Singleton
   static final Storage instance = Storage._privateConstructor();
 
@@ -52,7 +53,31 @@ class Storage {
     models[key] = model;
   }
 
+  //
+  // Encryption
+  //
+
+  bool locked = false;
+
+  bool isLocked() => isPasswordSet() ? locked : false;
+
+  bool isPasswordSet() => objects['settings'] != null && objects['settings']['password'] is String && objects['settings']['password'].length > 0;
+
+  bool isCorrectPassword(String text) {
+    if (!isPasswordSet()) {
+      return true;
+    }
+
+    return text == objects['settings']['password'];
+  }
+
   void lock() {
-    print('Locked');
+    locked = true;
+    notifyListeners();
+  }
+
+  void unlock() {
+    locked = false;
+    notifyListeners();
   }
 }

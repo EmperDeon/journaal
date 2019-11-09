@@ -7,23 +7,29 @@ import 'package:provider/provider.dart';
 class EntriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var model = Provider.of<EntriesModel>(context);
+    var entries = Provider.of<EntriesModel>(context);
 
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Test"),
+        title: new Text("Notes"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
+            onPressed: () => Navigator.pushNamed(context, '/settings')
+          ),
+        ],
       ),
       body: new Center(
         child: ListView.separated(
-          itemCount: model.length,
+          itemCount: entries.length,
           itemBuilder: (_c, index) => _EntryItem(index),
           separatorBuilder: (_c, _i) => Divider()
         )
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: () {
-          int addedIndex = model.add();
-          Navigator.pushNamed(context, '/entry', arguments: addedIndex);
+          entries.add();
         },
         tooltip: 'Add item',
         child: new Icon(Icons.add),

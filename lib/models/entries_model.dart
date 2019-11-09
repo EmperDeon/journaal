@@ -1,4 +1,6 @@
+import 'package:get_it/get_it.dart';
 import 'package:journal/models/entry.dart';
+import 'package:journal/services/navigation_service.dart';
 import 'package:journal/util/storable_model.dart';
 
 /*
@@ -20,13 +22,13 @@ class EntriesModel extends StorableModel {
   get length => _items.length;
 
 
-  int add() {
+  void add() {
     Entry item = Entry('Untitled note', '');
     _items.add(item);
 
     notifyListeners();
 
-    return _items.length - 1;
+    GetIt.I.get<NavigationService>().navigateTo('/entry', arguments: _items.length - 1);
   }
 
   void destroy(int id) {

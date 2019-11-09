@@ -9,6 +9,7 @@
 .history
 .svn/
 keystore.jks
+.env
 
 # IntelliJ related
 *.iml

@@ -41,6 +41,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: allow-equals-in-values
+      resolved-ref: f2a0e7228e8142113825545ed7f3cce4b8525b8f
+      url: "https://github.com/brianb-sf/flutter_dotenv.git"
+    source: git
+    version: "2.0.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -81,6 +90,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0+1"
+  pointycastle:
+    dependency: "direct main"
+    description:
+      name: pointycastle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   provider:
     dependency: "direct main"
     description:
