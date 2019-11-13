@@ -10,7 +10,6 @@ class Crypto {
     initDerivators();
   }
 
-
   //
   // Common functions
   //
@@ -38,12 +37,12 @@ class Crypto {
     return _random.nextBytes(length);
   }
 
-
   //
   // Derivator
   //
 
-  KeyDerivator passwordDerivator = PBKDF2KeyDerivator(new HMac(new SHA1Digest(), 32));
+  KeyDerivator passwordDerivator =
+      PBKDF2KeyDerivator(new HMac(new SHA1Digest(), 32));
 
   void initDerivators() {
     passwordDerivator.init(Pbkdf2Parameters(derivatorSalt(), 100, 128));

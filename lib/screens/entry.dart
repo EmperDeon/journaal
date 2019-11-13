@@ -1,92 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:journal/models/entries_model.dart';
-import 'package:journal/models/entry.dart';
-import 'package:provider/provider.dart';
+import 'package:journal/managers/entry.dart';
+import 'package:journal/screens/components/managed_widget.dart';
+import 'package:journal/screens/components/rx_text_field.dart';
+import 'package:journal/services.dart';
 
-class EntryScreen extends StatefulWidget {
-  Widget build(BuildContext context, TextEditingController titleController, TextEditingController bodyController, Function onSave, String title, String body) {
+class EntryScreen extends ManagedWidget<EntryManager> {
+  EntryScreen(String entryId, {Key key})
+      : super(sl<EntryManager>(), argument: entryId, key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(title),
+        title: StreamBuilder(
+          stream: manager.title.valueStream,
+          initialData: '',
+          builder: (_, snap) => Text(snap.data),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
             tooltip: 'Save',
-            onPressed: () {
-              onSave();
-              Navigator.pop(context);
-            },
+            onPressed: manager.save,
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: Column(children: <Widget>[
-            TextField(
-              autofocus: true,
+        child: ListView(
+          children: <Widget>[
+            RxTextField(
+              manager.title,
+              decoration: InputDecoration(labelText: 'Name'),
               maxLines: 1,
-              controller: titleController
             ),
-            Expanded(
-              child: TextField(
-                expands: true,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                controller: bodyController
-              )
-            )
-          ]
-        )
-      )
+            RxTextField(
+              manager.body,
+              decoration: InputDecoration(labelText: 'Body'),
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+            ),
+          ],
+        ),
+      ),
     );
-  }
-
-  @override
-  State<StatefulWidget> createState() => _EntryScreenState();
-}
-
-class _EntryScreenState extends State<EntryScreen> {
-  EntriesModel model;
-  int index;
-
-  String _title, _body;
-  final TextEditingController titleController = TextEditingController(),
-                              bodyController = TextEditingController();
-
-  void onSave() {
-    Entry entry = model.getByIndex(index).copy();
-    entry.title = titleController.text;
-    entry.body = bodyController.text;
-    model.setEntryAt(index, entry);
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    bodyController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    model = Provider.of<EntriesModel>(context);
-    index = ModalRoute.of(context).settings.arguments;
-    Entry entry = model.getByIndex(index).copy();
-    _title = entry.title;
-    _body = entry.body;
-
-    if (titleController.text.isEmpty) titleController.text = _title;
-    if (bodyController.text.isEmpty) bodyController.text = _body;
-
-    titleController.addListener(() {
-      _title = titleController.text;
-    });
-
-    bodyController.addListener(() {
-      _body = bodyController.text;
-    });
-
-    return widget.build(context, titleController, bodyController, onSave, _title, _body);
   }
 }

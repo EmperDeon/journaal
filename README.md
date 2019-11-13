@@ -1,6 +1,16 @@
 # Journal
 
-App for storing journal events
+App for storing notes and journal events
+
+Built using [RxVMS](https://www.burkharts.net/apps/blog/) architecture, with small modifications.
+
+
+## TODO:
+
+- Add focus change to RxTextFieldManager
+- Add crypto
+- Add Drawer
+
 
 # Detailed
 ## Storage

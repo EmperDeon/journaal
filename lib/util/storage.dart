@@ -1,36 +1,23 @@
 import 'dart:convert';
-import 'package:flutter/widgets.dart';
-import 'package:journal/util/storable_model.dart';
+import 'package:journal/models/base.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Storage extends ChangeNotifier{
-  // Singleton
-  static final Storage instance = Storage._privateConstructor();
-
-  Storage._privateConstructor();
-
-
-  //
-  // Object access
-  //
-
+class Storage {
   Map<String, dynamic> objects = {};
-  Map<String, StorableModel> models = {};
+  Map<String, BaseModel> models = {};
 
-  dynamic get (String key) => objects[key];
+  dynamic get(String key) => objects[key];
 
   void set(String key, dynamic value) => objects[key] = value;
 
-
   //
-  // Storage (File, SharedPreferences)
+  // Load/Save/Reload
   //
 
   SharedPreferences preferences;
 
   void loadFromStorage() async {
     preferences = await SharedPreferences.getInstance();
-    print(preferences.getString('storage'));
 
     objects = jsonDecode(preferences.getString('storage') ?? '{}');
     objects ??= {};
@@ -39,7 +26,7 @@ class Storage extends ChangeNotifier{
   }
 
   void saveToStorage() async {
-    print('Saving to storage:'); print(jsonEncode(objects));
+    // print('Saving to storage: ${jsonEncode(objects)}');
     await preferences.setString('storage', jsonEncode(objects));
   }
 
@@ -49,7 +36,7 @@ class Storage extends ChangeNotifier{
     }
   }
 
-  void addReloadTarget(String key, StorableModel model) {
+  void addReloadTarget(String key, BaseModel model) {
     models[key] = model;
   }
 
@@ -57,11 +44,10 @@ class Storage extends ChangeNotifier{
   // Encryption
   //
 
-  bool locked = false;
-
-  bool isLocked() => isPasswordSet() ? locked : false;
-
-  bool isPasswordSet() => objects['settings'] != null && objects['settings']['password'] is String && objects['settings']['password'].length > 0;
+  bool isPasswordSet() =>
+      objects['settings'] != null &&
+      objects['settings']['password'] is String &&
+      objects['settings']['password'].length > 0;
 
   bool isCorrectPassword(String text) {
     if (!isPasswordSet()) {
@@ -69,15 +55,5 @@ class Storage extends ChangeNotifier{
     }
 
     return text == objects['settings']['password'];
-  }
-
-  void lock() {
-    locked = true;
-    notifyListeners();
-  }
-
-  void unlock() {
-    locked = false;
-    notifyListeners();
   }
 }

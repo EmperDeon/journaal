@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:journal/util/storage.dart';
+import 'package:journal/managers/unlock.dart';
+import 'package:journal/screens/components/managed_widget.dart';
+import 'package:journal/screens/components/rx_text_field.dart';
+import 'package:journal/services.dart';
 
-class UnlockScreen extends StatefulWidget {
-  Widget build(BuildContext context, onTryUnlock, formKey, passController, validator) {
+class UnlockScreen extends ManagedWidget<UnlockManager> {
+  UnlockScreen({Key key}) : super(sl<UnlockManager>(), key: key);
+
+  Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text('Unlock'),
@@ -14,85 +18,30 @@ class UnlockScreen extends StatefulWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Form(
-              key: formKey,
-              child: TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
-                controller: passController,
-                onFieldSubmitted: (_) => onTryUnlock(silent: false),
-                validator: validator,
-                obscureText: true,
-              ),
+            RxTextField(
+              manager.password,
+              onFieldSubmitted: (_) => manager.submit(),
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
             ),
             Padding(padding: EdgeInsets.all(25.0)),
             RaisedButton(
               color: Colors.blue,
               child: Padding(
                 padding: EdgeInsets.all(20.0),
-                child: Text('Unlock', style: TextStyle(fontSize: 20, color: Colors.white)),
+                child: Text(
+                  'Unlock',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(40.0)
+                borderRadius: new BorderRadius.circular(40.0),
               ),
-              onPressed: () => onTryUnlock(silent: false),
-            )
+              onPressed: manager.submit,
+            ),
           ],
-        )
-      )
+        ),
+      ),
     );
-  }
-
-  @override
-  State<StatefulWidget> createState() => _UnlockScreenState();
-}
-
-class _UnlockScreenState extends State<UnlockScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final Storage storage = GetIt.I<Storage>();
-
-  bool firstBuild = true;
-  TextEditingController passController = TextEditingController();
-
-  //
-  // State
-  //
-
-  String validateField(String pass) {
-    if (!storage.isCorrectPassword(passController.text)) {
-      return 'Incorrect password';
-    }
-
-    return null;
-  }
-
-  void onTryUnlock({bool silent = false}) {
-    bool valid = false;
-
-    if (!silent) {
-      valid = _formKey.currentState.validate();
-    } else {
-      valid = storage.isCorrectPassword(passController.text);
-    }
-
-    if (valid)
-      storage.unlock();
-  }
-
-  @override
-  void dispose() {
-    passController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (firstBuild) {
-      firstBuild = false;
-
-      passController.addListener(() => onTryUnlock(silent: true));
-    }
-
-    return widget.build(context, onTryUnlock, _formKey, passController, validateField);
   }
 }

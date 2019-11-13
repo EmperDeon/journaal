@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:journal/services/navigation_service.dart';
 
+GetIt sl = GetIt.I;
+
 void initServices() {
-  GetIt.I.registerSingleton(NavigationService());
+  sl.registerSingleton<NavigationService>(NavigationService());
 }

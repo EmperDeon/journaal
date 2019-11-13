@@ -27,7 +27,6 @@ class Entry extends Storable {
     if (object is Map<String, dynamic>) {
       title = object['title'];
       body = object['body'];
-
     } else {
       print('Unsupported type for Entry: $object');
     }
@@ -35,9 +34,6 @@ class Entry extends Storable {
 
   @override
   save() {
-    return {
-      'title': title,
-      'body': body
-    };
+    return {'title': title, 'body': body};
   }
 }

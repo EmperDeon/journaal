@@ -1,20 +1,40 @@
-import 'package:journal/util/storable_model.dart';
+import 'package:journal/models/base.dart';
 
-class SettingsModel extends StorableModel {
-  String password, passwordHash;
+abstract class SettingsModel {
+  // Streams
+  Stream<Map<String, dynamic>> get itemsStream;
 
-  SettingsModel() : super('settings');
+  // Common
+  String get password;
+  set password(String pass);
+
+  bool lockingEnabled();
+  bool checkPassword(String pass);
+}
+
+class SettingsModelImpl extends BaseModel<Map<String, dynamic>>
+    implements SettingsModel {
+  String _password = '', passwordHash = '';
+
+  SettingsModelImpl() : super('settings');
 
   //
   // Field methods
   //
 
-  bool lockingEnabled() {
-    return password.length > 0;
-  }
+  @override
+  bool lockingEnabled() => _password.length > 0;
 
-  bool checkPassword(String pass) {
-    return password == pass;
+  @override
+  bool checkPassword(String pass) => _password == pass;
+
+  @override
+  String get password => _password;
+
+  @override
+  set password(String pass) {
+    _password = pass;
+    updateSubject();
   }
 
   //
@@ -22,24 +42,24 @@ class SettingsModel extends StorableModel {
   //
 
   @override
+  Map<String, dynamic> toSubjectData() => {'lockingEnabled': lockingEnabled()};
+
+  @override
   void load(dynamic object) {
     if (object is Map<String, dynamic> && object.length > 0) {
-      password = object['password'];
-      passwordHash = object['password_hash'];
-
+      password = object['password'] ?? '';
+      passwordHash = object['password_hash'] ?? '';
     } else {
       var type = object.runtimeType;
       print('Unsupported type for Entries: $object, $type');
     }
 
-    notifyListeners();
+    print("Loaded Settings: $object");
+    updateSubject();
   }
 
   @override
-  save() {
-    return {
-      'password': password,
-      'password_hash': passwordHash
-    };
+  dynamic save() {
+    return {'password': _password, 'password_hash': passwordHash};
   }
 }

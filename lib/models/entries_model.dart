@@ -1,7 +1,5 @@
-import 'package:get_it/get_it.dart';
 import 'package:journal/models/entry.dart';
-import 'package:journal/services/navigation_service.dart';
-import 'package:journal/util/storable_model.dart';
+import 'package:journal/models/base.dart';
 
 /*
  * Entries model, loaded from Storage
@@ -11,55 +9,74 @@ import 'package:journal/util/storable_model.dart';
  *   Entry
  * ]
  */
-class EntriesModel extends StorableModel {
-  List<Entry> _items = [Entry('Заметка 1', ''), Entry('Заметка 2', '')];
+abstract class EntriesModel {
+  // Streams
+  Stream<Map<String, Entry>> get itemsStream;
 
-  EntriesModel() : super('entries');
+  // CRUD
+  void destroy(String id);
+  Entry operator [](String id);
+  Entry at(String id);
+  void setEntryAt(String id, Entry value);
+}
 
-  /// An unmodifiable view of the items in the cart.
-  // UnmodifiableListView<Entry> get items => UnmodifiableListView(_items);
+class EntriesModelImpl extends BaseModel<Map<String, Entry>>
+    implements EntriesModel {
+  Map<String, Entry> _items = {
+    'key1': Entry('Заметка 1', ''),
+    'key2': Entry('Заметка 2', '')
+  };
 
-  get length => _items.length;
+  EntriesModelImpl() : super('entries');
 
+  //
+  // CRUD
+  //
 
-  void add() {
-    Entry item = Entry('Untitled note', '');
-    _items.add(item);
-
-    notifyListeners();
-
-    GetIt.I.get<NavigationService>().navigateTo('/entry', arguments: _items.length - 1);
-  }
-
-  void destroy(int id) {
-
-  }
-
-  Entry getByIndex(int index) {
-    return _items[index];
-  }
-
-  void setEntryAt(int index, Entry value) {
-    _items[index] = value;
-
-    notifyListeners();
+  @override
+  void destroy(String id) {
+    _items.remove(id);
+    updateSubject();
   }
 
   @override
-  void load(dynamic object) {
-    if (object is List<dynamic> && object.length > 0) {
-      _items = object.map((item) => Entry.from(item)).toList();
+  Entry operator [](String id) {
+    return _items[id];
+  }
 
+  @override
+  Entry at(String id) {
+    return _items[id];
+  }
+
+  @override
+  void setEntryAt(String id, Entry value) {
+    _items[id] = value;
+    updateSubject();
+  }
+
+  //
+  // Saving/Loading
+  //
+
+  @override
+  Map<String, Entry> toSubjectData() => _items;
+
+  @override
+  void load(dynamic object) {
+    if (object is Map<String, dynamic> && object.length > 0) {
+      _items = object.map((k, item) => MapEntry(k, Entry.from(item)));
     } else {
       var type = object.runtimeType;
       print('Unsupported type for Entries: $object, $type');
     }
 
-    notifyListeners();
+    print("Loaded $_items");
+    updateSubject();
   }
 
   @override
   dynamic save() {
-    return _items.map((item) => item.save()).toList();
+    return _items.map((k, item) => MapEntry(k, item.save()));
   }
 }
