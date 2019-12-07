@@ -12,21 +12,23 @@ enum ValidateMode { none, onChanged }
 //  - stream of value and error messages
 //  - validator
 //  - changed callback
-//
-// TODO: Next focus node
+//  - FocusNode to focus next
 class RxTextFieldManager {
   TextEditingController controller = TextEditingController();
   FocusNode focus = FocusNode();
+  FocusNode nextFocus;
   ValidateMode mode;
 
   RxFieldManagerOnChanged _onChangedCallback;
   RxFieldManagerValidate _validateWith;
 
-  RxTextFieldManager(
-      {String initialValue,
-      RxFieldManagerOnChanged onChangedCallback,
-      RxFieldManagerValidate validateWith,
-      this.mode = ValidateMode.onChanged}) {
+  RxTextFieldManager({
+    String initialValue,
+    RxFieldManagerOnChanged onChangedCallback,
+    RxFieldManagerValidate validateWith,
+    this.mode = ValidateMode.onChanged,
+    this.nextFocus,
+  }) {
     text = initialValue;
     _validateWith = validateWith ?? ((_) => null);
     _onChangedCallback = onChangedCallback ?? ((_) => null);
@@ -37,6 +39,13 @@ class RxTextFieldManager {
   void dispose() {
     _valueSubject.close();
     _errorSubject.close();
+  }
+
+  void reset() {
+    text = '';
+    _onChanged();
+
+    _errorSubject.add(null);
   }
 
   //
@@ -50,7 +59,7 @@ class RxTextFieldManager {
   // Changed
   //
 
-  BehaviorSubject<String> _valueSubject = BehaviorSubject<String>();
+  BehaviorSubject<String> _valueSubject = BehaviorSubject.seeded('');
 
   Stream<String> get valueStream => _valueSubject.stream
       .debounce((_) => TimerStream(true, const Duration(milliseconds: 100)))

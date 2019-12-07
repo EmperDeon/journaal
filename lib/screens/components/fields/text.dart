@@ -1,14 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:journal/screens/components/i18n/builder.dart';
+import 'package:journal/services/i18n.dart';
 import 'package:journal/util/field_managers/rx_field.dart';
 
 class RxTextField extends StatelessWidget {
   final RxTextFieldManager manager;
-  final Function(String) builder;
+  final Widget Function(BuildContext, String) builder;
+
+  // Title for field
+  final String title;
+
+  // Key for title translation
+  final String titleTr;
 
   RxTextField(
     this.manager, {
+    this.title,
+    this.titleTr,
     Key key,
     String initialValue,
     FocusNode focusNode,
@@ -47,11 +57,21 @@ class RxTextField extends StatelessWidget {
     EdgeInsets scrollPadding = const EdgeInsets.all(20.0),
     bool enableInteractiveSelection = true,
     InputCounterWidgetBuilder buildCounter,
-  }) : builder = ((error) => TextField(
-              decoration: decoration.copyWith(errorText: error),
+  }) : builder = ((context, error) => TextField(
+              decoration: decoration.copyWith(
+                labelText: titleTr == null ? title : I18n.t(titleTr),
+                errorText: error,
+              ),
               controller: manager.controller,
               focusNode: manager.focus,
-              // Delegates
+              onSubmitted: (v) {
+                if (manager.nextFocus != null)
+                  FocusScope.of(context).requestFocus(manager.nextFocus);
+
+                onFieldSubmitted(v);
+              },
+
+              // Delegated
               keyboardType: keyboardType,
               textInputAction: textInputAction,
               style: style,
@@ -72,7 +92,6 @@ class RxTextField extends StatelessWidget {
               maxLength: maxLength,
               onTap: onTap,
               onEditingComplete: onEditingComplete,
-              onSubmitted: onFieldSubmitted,
               onChanged: onChanged,
               inputFormatters: inputFormatters,
               enabled: enabled,
@@ -85,12 +104,16 @@ class RxTextField extends StatelessWidget {
               buildCounter: buildCounter,
             ));
 
+  Widget buildBase(BuildContext context) => StreamBuilder<String>(
+        stream: manager.errorStream,
+        initialData: null,
+        builder: (context, snapshot) => builder(context, snapshot.data),
+      );
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<String>(
-      stream: manager.errorStream,
-      initialData: null,
-      builder: (_, snapshot) => builder(snapshot.data),
-    );
+    return titleTr == null
+        ? buildBase(context)
+        : I18nBuilder(builder: buildBase);
   }
 }

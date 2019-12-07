@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:journal/managers/unlock.dart';
-import 'package:journal/screens/entries.dart';
-import 'package:journal/screens/entry.dart';
+import 'package:journal/managers/app.dart';
+import 'package:journal/screens/notes.dart';
+import 'package:journal/screens/note.dart';
 import 'package:journal/screens/settings.dart';
 import 'package:journal/screens/unlock.dart';
 import 'package:journal/services/navigation_service.dart';
@@ -13,35 +13,59 @@ class App extends StatefulWidget {
   Widget build(BuildContext context, _AppState state) {
     return StreamBuilder(
       stream: state.manager.lockingStream,
-      initialData: null,
+      initialData: {},
       builder: (_, snap) {
-        bool locked = snap.data ?? true;
+        bool locked = snap.data['locked'] ?? true;
+        locked = locked && (snap.data['lockingEnabled'] ?? true);
+
         return locked ? state.lockApp : state.mainApp;
       },
     );
   }
 
   ThemeData buildTheme() {
-    return ThemeData(primarySwatch: Colors.blue);
+    return ThemeData(
+      primarySwatch: Colors.blue,
+    );
+  }
+
+  Widget buildMaterialApp(
+    _AppState state, {
+    Function generateRoute,
+    navigatorKey,
+    routes = const <String, WidgetBuilder>{},
+  }) {
+    return StreamBuilder(
+      stream: state.manager.uiStream,
+      initialData: {},
+      builder: (_, snap) {
+        return MaterialApp(
+          // Theme
+          title: 'Notes',
+          theme: buildTheme(),
+
+          // Navigation
+          initialRoute: '/',
+          navigatorKey: navigatorKey,
+          routes: routes,
+          onGenerateRoute: generateRoute,
+        );
+      },
+    );
   }
 
   Widget buildLock(_AppState state) {
-    return MaterialApp(
-      title: 'Locked app',
-      theme: buildTheme(),
-      // navigatorKey: sl<NavigationService>().navigatorKey,
-      initialRoute: '/',
+    return buildMaterialApp(
+      state,
       routes: {'/': (context) => UnlockScreen()},
     );
   }
 
   Widget buildApp(_AppState state) {
-    return MaterialApp(
-      title: 'Notes App',
-      theme: buildTheme(),
+    return buildMaterialApp(
+      state,
       navigatorKey: sl<NavigationService>().navigatorKey,
-      initialRoute: '/',
-      onGenerateRoute: state.appGenerateRoute,
+      generateRoute: state.appGenerateRoute,
     );
   }
 
@@ -50,7 +74,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
-  UnlockManager manager = sl<UnlockManager>();
+  AppManager manager = sl<AppManager>();
 
   bool firstBuild = true;
   Widget lockApp, mainApp; // Cache
@@ -88,17 +112,17 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   // Routes
   Route<dynamic> appGenerateRoute(RouteSettings settings) {
-    Function builder = (_) => EntriesScreen();
+    Function builder = (_) => NotesScreen();
 
     switch (settings.name) {
-      case '/':
-        builder = (_) => EntriesScreen();
+      case NotesScreen.routeName:
+        builder = (_) => NotesScreen();
         break;
-      case '/entry':
-        builder = (_) => EntryScreen(settings.arguments);
+      case NoteScreen.routeName:
+        builder = (_) => NoteScreen(settings.arguments);
         break;
 
-      case '/settings':
+      case SettingsScreen.routeName:
         builder = (_) => SettingsScreen();
         break;
     }

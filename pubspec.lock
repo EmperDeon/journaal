@@ -55,15 +55,32 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_cupertino_localizations:
+    dependency: "direct main"
+    description:
+      name: flutter_cupertino_localizations
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter_dotenv:
     dependency: "direct main"
     description:
-      path: "."
-      ref: allow-equals-in-values
-      resolved-ref: f2a0e7228e8142113825545ed7f3cce4b8525b8f
-      url: "https://github.com/brianb-sf/flutter_dotenv.git"
-    source: git
-    version: "2.0.3"
+      name: flutter_dotenv
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
+  flutter_i18n:
+    dependency: "direct main"
+    description:
+      name: flutter_i18n
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.2"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -76,6 +93,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.3"
+  get_version:
+    dependency: "direct main"
+    description:
+      name: get_version
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0+1"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.15.8"
   matcher:
     dependency: transitive
     description:
@@ -90,6 +121,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.7"
+  package_info:
+    dependency: transitive
+    description:
+      name: package_info
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0+12"
   path:
     dependency: transitive
     description:
@@ -214,6 +252,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
 sdks:
   dart: ">=2.2.2 <3.0.0"
   flutter: ">=1.6.7 <2.0.0"

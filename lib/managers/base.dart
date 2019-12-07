@@ -1,4 +1,13 @@
-abstract class BaseManager {
-  // Reset status of manager on widget change, or reinitialize with screen arguments
-  void reset(dynamic object);
+import 'package:flutter/material.dart';
+
+class BaseManager {
+  ScaffoldState scaffold;
+
+  void setScaffold(ScaffoldState scaffoldKey) {
+    scaffold = scaffoldKey;
+  }
+
+  void showSnackBar(SnackBar bar) {
+    scaffold.showSnackBar(bar);
+  }
 }

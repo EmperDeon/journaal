@@ -1,0 +1,53 @@
+{
+    "app": {
+        "name": "Заметки",
+        "version": "Версия :"
+    },
+    "screens": {
+        "notes": "Заметки",
+        "note": "Редактирование заметки",
+        "settings": "Настройки",
+        "unlock": "Заблокировано"
+    },
+    "actions": {
+        "add": "Добавить",
+        "save": "Сохранить",
+        "delete": "Удалить",
+        "unlock": "Разблокировать"
+    },
+    "errors": {
+        "unlock": {
+            "incorrect_password": "Неправильный пароль"
+        },
+        "setting": {
+            "no_password": "Пароль не должен быть пустым"
+        }
+    },
+    "snackbar": {
+        "are_you_sure": "Вы уверены ?",
+        "yes": "Да"
+    },
+    "note": {
+        "name": "Название",
+        "body": "Текст"
+    },
+    "setting": {
+        "security": "Безопасность",
+        "other": "Другое",
+        "password": "Пароль",
+        "language": "Язык",
+        "passwordMode": "Режим блокировки",
+        "languages": {
+            "en": "English",
+            "ru": "Русский"
+        },
+        "passwordModes": {
+            "none": "Нет",
+            "password": "Пароль",
+            "pin": "PIN"
+        }
+    },
+    "unlock": {
+        "password": "Пароль"
+    }
+}

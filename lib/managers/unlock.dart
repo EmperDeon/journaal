@@ -1,41 +1,30 @@
+import 'package:journal/managers/app.dart';
 import 'package:journal/managers/base.dart';
+import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
+import 'package:journal/services/i18n.dart';
 import 'package:journal/util/field_managers/rx_field.dart';
 import 'package:journal/util/storage.dart';
-import 'package:rxdart/rxdart.dart';
 
 abstract class UnlockManager extends BaseManager {
-  // Streams
-  Stream<bool> get lockingStream;
-
   // Fields
   RxTextFieldManager password;
+  String get passwordMode;
 
   // Methods
   void submit({String value});
-  void lock();
-  bool unlockWith(String pass);
 }
 
-class UnlockManagerImpl implements UnlockManager {
+class UnlockManagerImpl extends BaseManager implements UnlockManager {
   final Storage storage = sl<Storage>();
-  bool locked;
+  final SettingsModel settings = sl<SettingsModel>();
 
   UnlockManagerImpl() {
-    locked = storage.isPasswordSet();
-    updateSubjects();
-
     password = RxTextFieldManager(
-        mode: ValidateMode.none,
-        onChangedCallback: passwordChanged,
-        validateWith: passwordValidator);
-
-    reset(null);
-  }
-
-  @override
-  void reset(dynamic object) {
-    password.text = '';
+      mode: ValidateMode.none,
+      onChangedCallback: passwordChanged,
+      validateWith: passwordValidator,
+    );
   }
 
   //
@@ -44,8 +33,9 @@ class UnlockManagerImpl implements UnlockManager {
 
   RxTextFieldManager password;
 
-  String passwordValidator(String pass) =>
-      storage.isCorrectPassword(pass) ? null : 'Incorrect password';
+  String passwordValidator(String pass) => storage.isCorrectPassword(pass)
+      ? null
+      : I18n.t('errors.unlock.incorrect_password');
 
   void passwordChanged(String pass) {
     if (storage.isCorrectPassword(pass)) {
@@ -53,18 +43,7 @@ class UnlockManagerImpl implements UnlockManager {
     }
   }
 
-  //
-  // Streams
-  //
-
-  BehaviorSubject<bool> _lockingSubject = BehaviorSubject();
-
-  @override
-  Stream<bool> get lockingStream => _lockingSubject.distinct();
-
-  void updateSubjects() {
-    _lockingSubject.add(storage.isPasswordSet() && locked);
-  }
+  String get passwordMode => settings.passwordMode;
 
   //
   // Methods
@@ -76,23 +55,10 @@ class UnlockManagerImpl implements UnlockManager {
 
     if (result) unlockWith(password.text);
 
-    reset(null);
+    password.reset();
   }
 
-  @override
-  void lock() {
-    locked = true;
-
-    updateSubjects();
-  }
-
-  @override
   bool unlockWith(String pass) {
-    bool result = storage.isCorrectPassword(pass);
-
-    if (result) locked = false;
-
-    updateSubjects();
-    return result;
+    return sl<AppManager>().unlockWith(pass);
   }
 }

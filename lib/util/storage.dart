@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:journal/models/base.dart';
+import 'package:journal/models/settings.dart';
+import 'package:journal/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Storage {
@@ -26,7 +28,7 @@ class Storage {
   }
 
   void saveToStorage() async {
-    // print('Saving to storage: ${jsonEncode(objects)}');
+    print('Saving to storage: ${jsonEncode(objects)}');
     await preferences.setString('storage', jsonEncode(objects));
   }
 
@@ -44,13 +46,8 @@ class Storage {
   // Encryption
   //
 
-  bool isPasswordSet() =>
-      objects['settings'] != null &&
-      objects['settings']['password'] is String &&
-      objects['settings']['password'].length > 0;
-
   bool isCorrectPassword(String text) {
-    if (!isPasswordSet()) {
+    if (!sl<SettingsModel>().lockingEnabled()) {
       return true;
     }
 

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:journal/managers.dart';
+import 'package:journal/managers/app.dart';
 import 'package:journal/models.dart';
 import 'package:journal/screens/app.dart';
 import 'package:journal/services.dart';
+import 'package:journal/services/i18n.dart';
 import 'package:journal/util/build_env.dart';
 import 'package:journal/util/crypto.dart';
 import 'package:journal/util/storage.dart';
@@ -13,7 +14,8 @@ void main() async {
 
   initServices();
   initModels();
-  initManagers();
+
+  postInit();
 
   runApp(App());
 }
@@ -31,4 +33,10 @@ Future initStorage() async {
 
   sl.registerSingleton<Storage>(storage);
   sl.registerSingleton<Crypto>(crypto);
+}
+
+void postInit() {
+  sl.registerSingleton<AppManager>(AppManagerImpl());
+
+  sl<I18n>().postInit();
 }

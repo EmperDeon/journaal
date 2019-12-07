@@ -1,8 +1,8 @@
-import 'package:journal/models/entries_model.dart';
-import 'package:journal/models/settings_model.dart';
+import 'package:journal/models/notes.dart';
+import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
 
 void initModels() {
-  sl.registerSingleton<EntriesModel>(EntriesModelImpl());
+  sl.registerSingleton<NotesModel>(NotesModelImpl());
   sl.registerSingleton<SettingsModel>(SettingsModelImpl());
 }

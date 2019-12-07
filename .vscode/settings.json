@@ -1,3 +1,4 @@
 {
-    "editor.selectionClipboard": false
+    "editor.selectionClipboard": false,
+    "editor.formatOnSave": true
 }

@@ -1,43 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:journal/managers/settings.dart';
-import 'package:journal/screens/components/managed_widget.dart';
-import 'package:journal/screens/components/rx_text_field.dart';
-import 'package:journal/services.dart';
+import 'package:journal/screens/components/basic_drawer.dart';
+import 'package:journal/screens/components/fields/dropdown.dart';
+import 'package:journal/screens/components/fields/text.dart';
+import 'package:journal/screens/components/i18n/text.dart';
+import 'package:journal/screens/base.dart';
 
-class SettingsScreen extends ManagedWidget<SettingsManager> {
-  SettingsScreen({Key key}) : super(sl<SettingsManager>(), key: key);
+class SettingsScreen extends BaseScreen<SettingsManager> {
+  static const String routeName = '/settings';
+  static const List<String> languages = ['en', 'ru'];
+  static const List<String> passwordModes = ['none', 'password', 'pin'];
+
+  SettingsScreen({Key key}) : super(titleTr: 'screens.settings', key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context, SettingsManager manager) {
     ThemeData theme = Theme.of(context);
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Settings'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.save),
-            tooltip: 'Save',
-            onPressed: manager.save,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: ListView(
+        children: <Widget>[
+          TextTr('setting.security', style: theme.textTheme.title),
+          RxDropdownField(
+            dataSource: passwordModes,
+            value: manager.passwordMode ?? passwordModes.first,
+            valueCommand: manager.updatePasswordMode,
+            titleTr: 'setting.passwordMode',
+            prefixTr: 'setting.passwordModes.',
+          ),
+          StreamBuilder(
+            stream: manager.updatePasswordMode,
+            initialData: manager.passwordMode ?? passwordModes.first,
+            builder: (_, snap) => RxTextField(
+              manager.passwordField,
+              titleTr: 'setting.password',
+              obscureText: true,
+              enabled: snap.data != 'none',
+              keyboardType: snap.data == 'pin'
+                  ? TextInputType.number
+                  : TextInputType.visiblePassword,
+            ),
+          ),
+          Container(height: 32),
+          TextTr(
+            'setting.other',
+            style: theme.textTheme.title,
+          ),
+          RxDropdownField(
+            dataSource: languages,
+            value: manager.locale ?? languages.first,
+            valueCommand: manager.updateLocale,
+            titleTr: 'setting.language',
+            prefixTr: 'setting.languages.',
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        child: ListView(
-          children: <Widget>[
-            Text(
-              'Security',
-              style: theme.textTheme.display1,
-            ),
-            RxTextField(
-              manager.passwordField,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            )
-          ],
-        ),
-      ),
     );
   }
+
+  // Actions for AppBar
+  @override
+  List<Widget> buildActions(BuildContext context, SettingsManager manager) => [
+        IconButton(
+          icon: const Icon(Icons.save),
+          tooltip: 'Save',
+          onPressed: manager.save,
+        ),
+      ];
+
+  // Screen Drawer
+  @override
+  BasicDrawer buildDrawer() => BasicDrawer(currentRoute: routeName);
+
+  @override
+  SettingsManager createManager() => SettingsManagerImpl();
 }

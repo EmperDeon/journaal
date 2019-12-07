@@ -1,0 +1,53 @@
+{
+    "app": {
+        "name": "Notes",
+        "version": "Version :"
+    },
+    "screens": {
+        "notes": "Notes",
+        "note": "Note editing",
+        "settings": "Settings",
+        "unlock": "Locked"
+    },
+    "actions": {
+        "add": "Add",
+        "save": "Save",
+        "delete": "Delete",
+        "unlock": "Unlock"
+    },
+    "snackbar": {
+        "are_you_sure": "Are you sure ?",
+        "yes": "Yes"
+    },
+    "errors": {
+        "unlock": {
+            "incorrect_password": "Incorrect password"
+        },
+        "setting": {
+            "no_password": "Password should be present"
+        }
+    },
+    "note": {
+        "name": "Name",
+        "body": "Body"
+    },
+    "setting": {
+        "security": "Security",
+        "other": "Other",
+        "password": "Password",
+        "language": "Language",
+        "passwordMode": "Locking mode",
+        "languages": {
+            "en": "English",
+            "ru": "Русский"
+        },
+        "passwordModes": {
+            "none": "None",
+            "password": "Password",
+            "pin": "PIN"
+        }
+    },
+    "unlock": {
+        "password": "Password"
+    }
+}
