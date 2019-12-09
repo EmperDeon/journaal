@@ -10,7 +10,7 @@ enum ValidateMode { none, onChanged }
 // State manager for TextField
 // Provides:
 //  - stream of value and error messages
-//  - validator
+//  - validator (should return FlutterI18n translation key)
 //  - changed callback
 //  - FocusNode to focus next
 class RxTextFieldManager {

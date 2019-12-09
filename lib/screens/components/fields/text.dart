@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:journal/screens/components/i18n/builder.dart';
 import 'package:journal/services/i18n.dart';
 import 'package:journal/util/field_managers/rx_field.dart';
 
@@ -57,16 +56,16 @@ class RxTextField extends StatelessWidget {
     EdgeInsets scrollPadding = const EdgeInsets.all(20.0),
     bool enableInteractiveSelection = true,
     InputCounterWidgetBuilder buildCounter,
-  }) : builder = ((context, error) => TextField(
+  }) : builder = ((c, error) => TextField(
               decoration: decoration.copyWith(
-                labelText: titleTr == null ? title : I18n.t(titleTr),
-                errorText: error,
+                labelText: titleTr == null ? title : I18n.t(c, titleTr),
+                errorText: error == null ? null : I18n.t(c, error),
               ),
               controller: manager.controller,
               focusNode: manager.focus,
               onSubmitted: (v) {
                 if (manager.nextFocus != null)
-                  FocusScope.of(context).requestFocus(manager.nextFocus);
+                  FocusScope.of(c).requestFocus(manager.nextFocus);
 
                 onFieldSubmitted(v);
               },
@@ -104,16 +103,12 @@ class RxTextField extends StatelessWidget {
               buildCounter: buildCounter,
             ));
 
-  Widget buildBase(BuildContext context) => StreamBuilder<String>(
-        stream: manager.errorStream,
-        initialData: null,
-        builder: (context, snapshot) => builder(context, snapshot.data),
-      );
-
   @override
-  Widget build(BuildContext context) {
-    return titleTr == null
-        ? buildBase(context)
-        : I18nBuilder(builder: buildBase);
+  Widget build(BuildContext c) {
+    return StreamBuilder<String>(
+      stream: manager.errorStream,
+      initialData: null,
+      builder: (c, snapshot) => builder(c, snapshot.data),
+    );
   }
 }

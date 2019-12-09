@@ -1,7 +1,6 @@
 import 'package:journal/managers/app.dart';
 import 'package:journal/managers/base.dart';
 import 'package:journal/models/settings.dart';
-import 'package:journal/services/i18n.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/services.dart';
 import 'package:journal/util/field_managers/rx_field.dart';
@@ -65,7 +64,7 @@ class SettingsManagerImpl extends BaseManager implements SettingsManager {
 
   String passwordValidator(String pass) =>
       (pass.length == 0 && _passwordMode != 'none')
-          ? I18n.t('errors.setting.no_password')
+          ? 'errors.setting.no_password'
           : null;
 
   //

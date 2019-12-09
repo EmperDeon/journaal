@@ -2,7 +2,6 @@ import 'package:journal/managers/app.dart';
 import 'package:journal/managers/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
-import 'package:journal/services/i18n.dart';
 import 'package:journal/util/field_managers/rx_field.dart';
 import 'package:journal/util/storage.dart';
 
@@ -35,7 +34,7 @@ class UnlockManagerImpl extends BaseManager implements UnlockManager {
 
   String passwordValidator(String pass) => storage.isCorrectPassword(pass)
       ? null
-      : I18n.t('errors.unlock.incorrect_password');
+      : 'errors.unlock.incorrect_password';
 
   void passwordChanged(String pass) {
     if (storage.isCorrectPassword(pass)) {

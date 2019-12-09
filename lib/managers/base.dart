@@ -1,13 +1,19 @@
-import 'package:flutter/material.dart';
+import 'package:journal/presenters/base.dart';
+import 'package:journal/presenters/snackbar.dart';
+import 'package:rxdart/rxdart.dart';
 
 class BaseManager {
-  ScaffoldState scaffold;
-
-  void setScaffold(ScaffoldState scaffoldKey) {
-    scaffold = scaffoldKey;
+  void dispose() {
+    _scaffoldSubject.close();
   }
 
-  void showSnackBar(SnackBar bar) {
-    scaffold.showSnackBar(bar);
+  BehaviorSubject<ScaffoldPresentation> _scaffoldSubject = BehaviorSubject();
+
+  Stream<ScaffoldPresentation> get scaffoldStream =>
+      _scaffoldSubject.stream.distinct();
+
+  // Adds presentation to scaffoldStream, then null to clear later states
+  void presentToScaffold(SnackbarPresentation bar) {
+    _scaffoldSubject.add(bar);
   }
 }

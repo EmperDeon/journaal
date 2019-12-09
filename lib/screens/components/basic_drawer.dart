@@ -13,8 +13,8 @@ class BasicDrawer extends StatelessWidget {
       : _beforeNavigateCallback = beforeNavigateCallback ?? (() => null);
 
   @override
-  Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+  Widget build(BuildContext c) {
+    ThemeData theme = Theme.of(c);
     TextStyle titleTheme = theme.textTheme.display3.apply(color: Colors.white);
     TextStyle footerText = theme.textTheme.body1.apply(fontWeightDelta: -2);
 

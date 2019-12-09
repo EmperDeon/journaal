@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:journal/managers/base.dart';
+import 'package:journal/presenters/snackbar.dart';
 import 'package:journal/screens/components/basic_drawer.dart';
 import 'package:journal/screens/components/i18n/text.dart';
+import 'package:journal/services/i18n.dart';
 
 abstract class BaseScreen<T extends BaseManager> extends StatefulWidget {
   // Title of screen
@@ -17,47 +20,55 @@ abstract class BaseScreen<T extends BaseManager> extends StatefulWidget {
     this.titleTr,
   }) : super(key: key);
 
-  Widget _build(BuildContext context, T manager) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: buildTitle(context, manager),
-        actions: buildActions(context, manager),
-      ),
-      drawer: buildDrawer(),
-      body: Builder(
-        builder: (subContext) {
-          manager.setScaffold(Scaffold.of(subContext));
-
-          return buildContent(subContext, manager);
-        },
-      ),
-      floatingActionButton: buildFloatingButton(context, manager),
-    );
-  }
-
   // Content for screen
-  Widget buildContent(BuildContext context, T manager);
+  Widget buildContent(BuildContext c, T manager);
 
   // Title for screen
-  Widget buildTitle(BuildContext context, T manager) => titleTr == null ? Text(title) : TextTr(titleTr);
+  Widget buildTitle(BuildContext c, T manager) =>
+      titleTr == null ? Text(title) : TextTr(titleTr);
 
   // Actions for AppBar
-  List<Widget> buildActions(BuildContext context, T manager) => [];
+  List<Widget> buildActions(BuildContext c, T manager) => [];
 
   // Floating button
-  Widget buildFloatingButton(BuildContext context, T manager) => null;
+  Widget buildFloatingButton(BuildContext c, T manager) => null;
 
   // Screen Drawer
   BasicDrawer buildDrawer() => null;
 
   T createManager();
 
+  //
+  // Helper functions
+  //
+
+  Widget _build(BuildContext c, _BaseScreenState state) {
+    return new Scaffold(
+      key: state.scaffoldKey,
+      appBar: new AppBar(
+        title: buildTitle(c, state.manager),
+        actions: buildActions(c, state.manager),
+      ),
+      drawer: buildDrawer(),
+      body: Builder(
+        builder: (c2) => buildContent(c2, state.manager),
+      ),
+      floatingActionButton: buildFloatingButton(c, state.manager),
+    );
+  }
+
+  // Translate key
+  String t(BuildContext c, String key,
+          {Map<String, String> args, int plural}) =>
+      I18n.t(c, key, args: args, plural: plural);
+
   @override
   State<StatefulWidget> createState() => _BaseScreenState<T>();
 }
 
 class _BaseScreenState<T extends BaseManager> extends State<BaseScreen> {
-  T manager;
+  BaseManager manager;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -67,8 +78,26 @@ class _BaseScreenState<T extends BaseManager> extends State<BaseScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    Widget r = widget._build(context, manager);
+  void didChangeDependencies() {
+    manager.scaffoldStream.listen((data) {
+      if (data == null) return;
+
+      if (data is SnackbarPresentation) presentSnackBar(context, data);
+    });
+
+    super.didChangeDependencies();
+  }
+
+  // Show snackbar
+  void presentSnackBar(BuildContext c, SnackbarPresentation presentation) {
+    scaffoldKey.currentState.showSnackBar(presentation.toBar(c));
+
+    manager.presentToScaffold(null);
+  }
+
+  @override
+  Widget build(BuildContext c) {
+    Widget r = widget._build(context, this);
 
     return r;
   }

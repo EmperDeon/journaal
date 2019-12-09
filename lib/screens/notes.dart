@@ -3,9 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:journal/managers/notes.dart';
 import 'package:journal/models/note.dart';
 import 'package:journal/screens/components/basic_drawer.dart';
-import 'package:journal/screens/components/i18n/builder.dart';
 import 'package:journal/screens/base.dart';
-import 'package:journal/services/i18n.dart';
 
 class NotesScreen extends BaseScreen<NotesManager> {
   static const String routeName = '/';
@@ -13,7 +11,7 @@ class NotesScreen extends BaseScreen<NotesManager> {
   NotesScreen({Key key}) : super(titleTr: 'screens.notes', key: key);
 
   @override
-  Widget buildContent(BuildContext context, NotesManager manager) {
+  Widget buildContent(BuildContext c, NotesManager manager) {
     return Center(
       child: StreamBuilder(
         stream: manager.itemKeysStream,
@@ -46,13 +44,11 @@ class NotesScreen extends BaseScreen<NotesManager> {
   BasicDrawer buildDrawer() => BasicDrawer(currentRoute: routeName);
 
   @override
-  Widget buildFloatingButton(BuildContext context, NotesManager manager) =>
-      I18nBuilder(
-        builder: (_) => FloatingActionButton(
-          onPressed: manager.create,
-          tooltip: I18n.t('actions.add'),
-          child: new Icon(Icons.add),
-        ),
+  Widget buildFloatingButton(BuildContext c, NotesManager manager) =>
+      FloatingActionButton(
+        onPressed: manager.create,
+        tooltip: t(c, 'actions.add'),
+        child: new Icon(Icons.add),
       );
 
   @override

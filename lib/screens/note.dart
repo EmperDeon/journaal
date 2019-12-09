@@ -12,7 +12,7 @@ class NoteScreen extends BaseScreen<NoteManager> {
   NoteScreen(this.noteId, {Key key}) : super(titleTr: 'screens.note', key: key);
 
   @override
-  Widget buildContent(BuildContext context, NoteManager manager) {
+  Widget buildContent(BuildContext c, NoteManager manager) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: ListView(
@@ -35,7 +35,7 @@ class NoteScreen extends BaseScreen<NoteManager> {
 
   // Actions for AppBar
   @override
-  List<Widget> buildActions(BuildContext context, NoteManager manager) => [
+  List<Widget> buildActions(BuildContext c, NoteManager manager) => [
         IconButtonTr(
           icon: const Icon(Icons.save),
           tooltip: 'actions.save',

@@ -1,7 +1,7 @@
 import 'package:journal/managers/base.dart';
 import 'package:journal/models/notes.dart';
 import 'package:journal/models/note.dart';
-import 'package:journal/screens/components/snackbar_actions.dart';
+import 'package:journal/presenters/snackbar.dart';
 import 'package:journal/services.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/util/field_managers/rx_field.dart';
@@ -48,7 +48,7 @@ class NoteManagerImpl extends BaseManager implements NoteManager {
 
   @override
   void destroy() {
-    showSnackBar(SnackbarActions.removeWarning(() {
+    presentToScaffold(SnackbarPresenter.removeWarning(() {
       model.destroy(noteId);
       navigator.pop();
     }));

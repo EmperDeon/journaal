@@ -1,18 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:journal/screens/components/i18n/builder.dart';
 import 'package:journal/services/i18n.dart';
 
 /// I18n wrapper for Text
-class TextTr extends I18nBuilder {
-  final String trKey;
-  final Map<String, String> args;
-  final int plural;
-
+class TextTr extends Builder {
   TextTr(
-    this.trKey, {
+    String trKey, {
     Key key,
-    this.args,
-    this.plural,
+    Map<String, String> args,
+    int plural,
 
     // Text args
     TextStyle style,
@@ -27,8 +22,8 @@ class TextTr extends I18nBuilder {
     String semanticsLabel,
     TextWidthBasis textWidthBasis,
   }) : super(
-          builder: (_) => Text(
-            I18n.t(trKey, args: args, plural: plural),
+          builder: (c) => Text(
+            I18n.t(c, trKey, args: args, plural: plural),
             style: style,
             strutStyle: strutStyle,
             textAlign: textAlign,

@@ -93,7 +93,7 @@ class SettingsModelImpl extends BaseModel<Map<String, dynamic>>
       print('Unsupported type for Notes: $object, $type');
     }
 
-    print("Loaded Settings: ${save()}");
+    print("Loaded Settings: ${toSubjectData()}");
     updateSubject();
   }
 

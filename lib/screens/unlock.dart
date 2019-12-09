@@ -8,7 +8,7 @@ class UnlockScreen extends BaseScreen<UnlockManager> {
   UnlockScreen({Key key}) : super(titleTr: 'screens.unlock', key: key);
 
   @override
-  Widget buildContent(BuildContext context, UnlockManager manager) {
+  Widget buildContent(BuildContext c, UnlockManager manager) {
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Column(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:journal/managers/app.dart';
 import 'package:journal/screens/notes.dart';
 import 'package:journal/screens/note.dart';
@@ -10,11 +12,13 @@ import 'package:journal/services.dart';
 import 'package:journal/util/build_env.dart';
 
 class App extends StatefulWidget {
-  Widget build(BuildContext context, _AppState state) {
+  Widget build(BuildContext c, _AppState state) {
     return StreamBuilder(
       stream: state.manager.lockingStream,
       initialData: {},
       builder: (_, snap) {
+        print('Built AppState with ${snap.data}');
+
         bool locked = snap.data['locked'] ?? true;
         locked = locked && (snap.data['lockingEnabled'] ?? true);
 
@@ -34,25 +38,40 @@ class App extends StatefulWidget {
     Function generateRoute,
     navigatorKey,
     routes = const <String, WidgetBuilder>{},
-  }) {
-    return StreamBuilder(
-      stream: state.manager.uiStream,
-      initialData: {},
-      builder: (_, snap) {
-        return MaterialApp(
-          // Theme
-          title: 'Notes',
-          theme: buildTheme(),
+  }) =>
+      StreamBuilder(
+        stream: state.manager.uiStream,
+        initialData: {},
+        builder: (_, snap) {
+          Locale locale = Locale(snap.data['locale'] ?? 'en');
 
-          // Navigation
-          initialRoute: '/',
-          navigatorKey: navigatorKey,
-          routes: routes,
-          onGenerateRoute: generateRoute,
-        );
-      },
-    );
-  }
+          return MaterialApp(
+            // Theme
+            title: 'Notes',
+            theme: buildTheme(),
+
+            // Navigation
+            initialRoute: '/',
+            navigatorKey: navigatorKey,
+            routes: routes,
+            onGenerateRoute: generateRoute,
+
+            // I18n
+            locale: locale,
+            localizationsDelegates: [
+              FlutterI18nDelegate(
+                useCountryCode: false,
+                fallbackFile: 'en',
+                path: "assets/i18n",
+                forcedLocale: locale,
+              ),
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
+            supportedLocales: [const Locale('en'), const Locale('ru')],
+          );
+        },
+      );
 
   Widget buildLock(_AppState state) {
     return buildMaterialApp(
@@ -80,7 +99,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   Widget lockApp, mainApp; // Cache
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext c) {
     if (firstBuild || sl<BuildEnv>().debug) {
       // No need to rebuild apps on each state change
       lockApp = widget.buildLock(this);

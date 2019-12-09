@@ -23,6 +23,14 @@ class AppManagerImpl extends BaseManager implements AppManager {
 
   AppManagerImpl() {
     updateSubjects();
+
+    settings.itemsStream.listen((_) => updateSubjects());
+  }
+
+  @override
+  void dispose() {
+    _lockingSubject.close();
+    super.dispose();
   }
 
   //
@@ -36,16 +44,15 @@ class AppManagerImpl extends BaseManager implements AppManager {
   }
 
   @override
-  Stream<Map<String, dynamic>> get lockingStream => Observable.combineLatest2(
-        settings.itemsStream.map((v) => selectKeys(v, ['lockingEnabled'])),
-        _lockingSubject.map(
-            (v) => {'locked': v, 'lockingEnabled': settings.lockingEnabled()}),
-        (v1, v2) => mergeMaps<String, dynamic>([v1, v2]),
-      ).distinct();
+  Stream<Map<String, dynamic>> get lockingStream => _lockingSubject
+      .map(
+        (v) => {'locked': v, 'lockingEnabled': settings.lockingEnabled()},
+      )
+      .distinct();
 
   @override
   Stream<Map<String, dynamic>> get uiStream => settings.itemsStream
-      .map((items) => selectKeys(items, ['theme']))
+      .map((items) => selectKeys(items, ['locale', 'theme']))
       .distinct();
 
   //

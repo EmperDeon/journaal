@@ -3,6 +3,7 @@ import 'package:journal/managers/settings.dart';
 import 'package:journal/screens/components/basic_drawer.dart';
 import 'package:journal/screens/components/fields/dropdown.dart';
 import 'package:journal/screens/components/fields/text.dart';
+import 'package:journal/screens/components/i18n/icon_button.dart';
 import 'package:journal/screens/components/i18n/text.dart';
 import 'package:journal/screens/base.dart';
 
@@ -14,8 +15,8 @@ class SettingsScreen extends BaseScreen<SettingsManager> {
   SettingsScreen({Key key}) : super(titleTr: 'screens.settings', key: key);
 
   @override
-  Widget buildContent(BuildContext context, SettingsManager manager) {
-    ThemeData theme = Theme.of(context);
+  Widget buildContent(BuildContext c, SettingsManager manager) {
+    ThemeData theme = Theme.of(c);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -61,10 +62,10 @@ class SettingsScreen extends BaseScreen<SettingsManager> {
 
   // Actions for AppBar
   @override
-  List<Widget> buildActions(BuildContext context, SettingsManager manager) => [
-        IconButton(
+  List<Widget> buildActions(BuildContext c, SettingsManager manager) => [
+        IconButtonTr(
           icon: const Icon(Icons.save),
-          tooltip: 'Save',
+          tooltip: 'actions.save',
           onPressed: manager.save,
         ),
       ];

@@ -4,7 +4,6 @@ import 'package:journal/managers/app.dart';
 import 'package:journal/models.dart';
 import 'package:journal/screens/app.dart';
 import 'package:journal/services.dart';
-import 'package:journal/services/i18n.dart';
 import 'package:journal/util/build_env.dart';
 import 'package:journal/util/crypto.dart';
 import 'package:journal/util/storage.dart';
@@ -37,6 +36,4 @@ Future initStorage() async {
 
 void postInit() {
   sl.registerSingleton<AppManager>(AppManagerImpl());
-
-  sl<I18n>().postInit();
 }
