@@ -62,6 +62,9 @@ abstract class BaseScreen<T extends BaseManager> extends StatefulWidget {
           {Map<String, String> args, int plural}) =>
       I18n.t(c, key, args: args, plural: plural);
 
+  String l(BuildContext c, String key, DateTime dateTime) =>
+      I18n.l(c, key, dateTime);
+
   @override
   State<StatefulWidget> createState() => _BaseScreenState<T>();
 }

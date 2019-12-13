@@ -8,6 +8,11 @@ class NavigationService {
     return navigatorKey.currentState.pushNamed(routeName, arguments: arguments);
   }
 
+  void replaceWith(String routeName, {dynamic arguments}) {
+    navigatorKey.currentState
+        .pushReplacementNamed(routeName, arguments: arguments);
+  }
+
   bool pop({dynamic result}) {
     return navigatorKey.currentState.pop(result);
   }

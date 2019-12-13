@@ -36,6 +36,7 @@ class BasicDrawer extends StatelessWidget {
                   ),
                 ),
                 buildTile('screens.notes', '/', Icons.list),
+                buildTile('screens.journals', '/journals', Icons.format_list_numbered),
                 buildTile('screens.settings', '/settings', Icons.settings),
               ],
             ),
@@ -89,6 +90,6 @@ class BasicDrawer extends StatelessWidget {
     }
 
     _beforeNavigateCallback();
-    sl<NavigationService>().navigateTo(name);
+    sl<NavigationService>().replaceWith(name);
   }
 }

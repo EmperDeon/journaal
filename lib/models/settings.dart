@@ -2,7 +2,7 @@ import 'package:journal/models/base.dart';
 
 /// Settings model
 ///
-/// storad value:
+/// stored value:
 /// {
 ///   password: string,
 ///   passwordHash: string,

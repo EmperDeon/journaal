@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:journal/managers/app.dart';
+import 'package:journal/screens/journal.dart';
+import 'package:journal/screens/journals.dart';
 import 'package:journal/screens/notes.dart';
 import 'package:journal/screens/note.dart';
 import 'package:journal/screens/settings.dart';
@@ -139,6 +141,13 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         break;
       case NoteScreen.routeName:
         builder = (_) => NoteScreen(settings.arguments);
+        break;
+
+      case JournalsScreen.routeName:
+        builder = (_) => JournalsScreen();
+        break;
+      case JournalScreen.routeName:
+        builder = (_) => JournalScreen(settings.arguments);
         break;
 
       case SettingsScreen.routeName:

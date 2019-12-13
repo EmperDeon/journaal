@@ -6,6 +6,8 @@
     "screens": {
         "notes": "Заметки",
         "note": "Редактирование заметки",
+        "journals": "Ежедневник",
+        "journal": "Редактирование",
         "settings": "Настройки",
         "unlock": "Заблокировано"
     },
@@ -15,6 +17,10 @@
         "delete": "Удалить",
         "unlock": "Разблокировать"
     },
+    "snackbar": {
+        "are_you_sure": "Вы уверены ?",
+        "yes": "Да"
+    },
     "errors": {
         "unlock": {
             "incorrect_password": "Неправильный пароль"
@@ -23,9 +29,8 @@
             "no_password": "Пароль не должен быть пустым"
         }
     },
-    "snackbar": {
-        "are_you_sure": "Вы уверены ?",
-        "yes": "Да"
+    "datetime": {
+        "date": "d.M.y"
     },
     "note": {
         "name": "Название",

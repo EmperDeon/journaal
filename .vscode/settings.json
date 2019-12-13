@@ -1,4 +1,10 @@
 {
     "editor.selectionClipboard": false,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "bracket-pair-colorizer-2.colors": [
+        "#f2ef8e",
+        "#f2bd8e",
+        "#c3f28e",
+        "#8ef2ef"
+    ]
 }

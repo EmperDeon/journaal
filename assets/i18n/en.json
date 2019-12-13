@@ -6,6 +6,8 @@
     "screens": {
         "notes": "Notes",
         "note": "Note editing",
+        "journals": "Journal",
+        "journal": "Journal editing",
         "settings": "Settings",
         "unlock": "Locked"
     },
@@ -27,7 +29,14 @@
             "no_password": "Password should be present"
         }
     },
+    "datetime": {
+        "date": "y/M/d"
+    },
     "note": {
+        "name": "Name",
+        "body": "Body"
+    },
+    "journal": {
         "name": "Name",
         "body": "Body"
     },

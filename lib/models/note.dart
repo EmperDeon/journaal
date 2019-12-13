@@ -2,7 +2,7 @@ import 'package:journal/util/storable.dart';
 
 /// Note model
 ///
-/// storad value:
+/// stored value:
 /// {
 ///   title: string,
 ///   body: string
