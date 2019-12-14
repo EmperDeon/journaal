@@ -5,6 +5,7 @@ import 'package:journal/screens/components/fields/text.dart';
 import 'package:journal/screens/components/i18n/icon_button.dart';
 import 'package:journal/screens/base.dart';
 import 'package:journal/screens/components/i18n/text.dart';
+import 'package:journal/screens/components/section.dart';
 import 'package:journal/util/utils.dart';
 
 class JournalScreen extends BaseScreen<JournalManager> {
@@ -21,7 +22,7 @@ class JournalScreen extends BaseScreen<JournalManager> {
       child: ListView(
         children: <Widget>[
           TextField(
-            decoration: InputDecoration(labelText: '12313'),
+            decoration: InputDecoration(labelText: 'Date'),
           ),
           buildEntries(c, manager),
           RaisedButton(
@@ -34,37 +35,44 @@ class JournalScreen extends BaseScreen<JournalManager> {
     );
   }
 
-  Widget buildEntries(BuildContext c, JournalManager manager) {
-    return StreamBuilder(
-        stream: manager.entriesStream,
-        initialData: [],
-        builder: (_, snap) {
-          print('Got ${snap.data}');
-          return Column(
-            children: List.castFrom<dynamic, Widget>(flattenL(
-              snap.data
-                  .map((fManager) => <Widget>[
-                        Divider(
-                          thickness: 1,
-                          height: 32,
-                        ),
-                        RxTextField(
-                          fManager.title,
-                          titleTr: 'journal.name',
-                          maxLines: 1,
-                        ),
-                        RxTextField(
-                          fManager.body,
-                          titleTr: 'journal.body',
-                          maxLines: null,
-                          keyboardType: TextInputType.multiline,
-                        ),
-                      ])
-                  .toList(),
-            )),
-          );
-        });
-  }
+  Widget buildEntries(BuildContext c, JournalManager manager) => StreamBuilder(
+      stream: manager.entriesStream,
+      initialData: [],
+      builder: (_, snap) {
+        return Column(
+          children: List.castFrom<dynamic, Widget>(flattenL(
+            snap.data
+                .asMap()
+                .map((index, fManager) =>
+                    MapEntry(index, buildEntry(c, index, fManager)))
+                .values
+                .toList(),
+          )),
+        );
+      });
+
+  Widget buildEntry(BuildContext c, int index, fManager) => Section(
+        title: t(c, 'journal.entry', args: {'num': (index + 1).toString()}),
+        child: Column(children: <Widget>[
+          RxTextField(
+            fManager.title,
+            titleTr: 'journal.name',
+            maxLines: 1,
+          ),
+          RxTextField(
+            fManager.body,
+            titleTr: 'journal.body',
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+          ),
+        ]),
+        buttons: <Widget>[
+          // IconButton(
+          //   icon: Icon(Icons.delete),
+          //   onPressed: () => ,
+          // )
+        ],
+      );
 
   // Actions for AppBar
   @override

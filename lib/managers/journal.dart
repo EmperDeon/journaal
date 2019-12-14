@@ -29,8 +29,6 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
   JournalManagerImpl(this.journalId) {
     journal = model.at(journalId);
 
-    entriesStream.listen((d) => print('Got data: $d'));
-
     entries = journal.entries
         .map((item) => JournalEntryManager(item.title, item.body))
         .toList();

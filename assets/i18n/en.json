@@ -38,7 +38,8 @@
     },
     "journal": {
         "name": "Name",
-        "body": "Body"
+        "body": "Body",
+        "entry": "Entry {num}"
     },
     "setting": {
         "security": "Security",

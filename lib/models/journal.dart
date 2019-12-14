@@ -26,8 +26,8 @@ class Journal implements Storable {
 
     if (object is Map<String, dynamic>) {
       date = DateTime.fromMillisecondsSinceEpoch(object['date'] ?? 0);
-      entries = object['entries']?.map((item) => JournalEntry.from(item)) ?? [];
-      tags = object['tags']?.map((item) => item as String) ?? [];
+      entries = JournalEntry.castFromList(object['entries']) ?? [];
+      tags = List.castFrom<dynamic, String>(object['tags'] ?? []);
     } else if (object != null) {
       print('Unsupported type for Journal: $object');
     }
@@ -60,6 +60,11 @@ class JournalEntry implements Storable {
 
   JournalEntry.from(dynamic object) {
     load(object);
+  }
+
+  static List<JournalEntry> castFromList(dynamic object) {
+    return List.castFrom<dynamic, JournalEntry>(
+        object?.map((item) => JournalEntry.from(item))?.toList());
   }
 
   @override
