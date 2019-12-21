@@ -57,3 +57,12 @@ List flattenL(List list) {
 
   return ret;
 }
+
+typedef MapComparator<K, V> = int Function(Map<K, V>, V, V);
+
+List<K> orderedKeys<K, V>(Map<K, V> map, MapComparator<K, V> comp) {
+  List<K> keys = map.keys.toList();
+  keys.sort((k1, k2) => comp(map, map[k1], map[k2]));
+
+  return keys;
+}

@@ -1,6 +1,7 @@
 import 'package:journal/managers/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
+import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/storage.dart';
 import 'package:journal/util/utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,7 +17,9 @@ abstract class AppManager extends BaseManager {
   bool unlockWith(String pass);
 }
 
-class AppManagerImpl extends BaseManager implements AppManager {
+class AppManagerImpl extends BaseManager
+    with ScopedLogger
+    implements AppManager {
   Storage storage = sl<Storage>();
   SettingsModel settings = sl<SettingsModel>();
   bool locked = true;
@@ -25,6 +28,10 @@ class AppManagerImpl extends BaseManager implements AppManager {
     updateSubjects();
 
     settings.itemsStream.listen((_) => updateSubjects());
+
+    lockingStream
+        .listen((data) => logger.d('Updated lockingStream with $data'));
+    uiStream.listen((data) => logger.d('Updated uiStream with $data'));
   }
 
   @override

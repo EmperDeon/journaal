@@ -1,3 +1,4 @@
+import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/storable.dart';
 
 /// Note model
@@ -8,7 +9,7 @@ import 'package:journal/util/storable.dart';
 ///   body: string
 /// }
 ///
-class Note implements Storable {
+class Note with ScopedLogger implements Storable {
   String title, body;
 
   Note(this.title, this.body);
@@ -28,8 +29,8 @@ class Note implements Storable {
     if (object is Map<String, dynamic>) {
       title = object['title'];
       body = object['body'];
-    } else {
-      print('Unsupported type for Note: $object');
+    } else if (object != null) {
+      logger.w('Unsupported type for Note: $object');
     }
   }
 

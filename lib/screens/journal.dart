@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:journal/managers/journal.dart';
+import 'package:journal/screens/components/fields/datetime.dart';
+import 'package:journal/screens/components/fields/icon_selector.dart';
 import 'package:journal/screens/components/fields/text.dart';
-import 'package:journal/screens/components/i18n/icon_button.dart';
 import 'package:journal/screens/base.dart';
-import 'package:journal/screens/components/i18n/text.dart';
 import 'package:journal/screens/components/section.dart';
 import 'package:journal/util/utils.dart';
 
@@ -21,15 +21,11 @@ class JournalScreen extends BaseScreen<JournalManager> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: ListView(
         children: <Widget>[
-          TextField(
-            decoration: InputDecoration(labelText: 'Date'),
+          RxDateTimeField(
+            manager.date,
+            titleTr: 'journal.date',
           ),
           buildEntries(c, manager),
-          RaisedButton(
-            color: Colors.blue,
-            child: TextTr('actions.add'),
-            onPressed: manager.appendEntry,
-          )
         ],
       ),
     );
@@ -44,50 +40,70 @@ class JournalScreen extends BaseScreen<JournalManager> {
             snap.data
                 .asMap()
                 .map((index, fManager) =>
-                    MapEntry(index, buildEntry(c, index, fManager)))
+                    MapEntry(index, buildEntry(c, manager, index, fManager)))
                 .values
                 .toList(),
           )),
         );
       });
 
-  Widget buildEntry(BuildContext c, int index, fManager) => Section(
+  Widget buildEntry(BuildContext c, JournalManager manager, int index,
+          JournalEntryManager fManager) =>
+      Section(
         title: t(c, 'journal.entry', args: {'num': (index + 1).toString()}),
-        child: Column(children: <Widget>[
-          RxTextField(
-            fManager.title,
-            titleTr: 'journal.name',
-            maxLines: 1,
-          ),
-          RxTextField(
-            fManager.body,
-            titleTr: 'journal.body',
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-          ),
-        ]),
+        child: Column(
+          children: <Widget>[
+            RxTextField(
+              fManager.title,
+              titleTr: 'journal.name',
+              maxLines: 1,
+            ),
+            RxTextField(
+              fManager.body,
+              titleTr: 'journal.body',
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+            ),
+            RxIconSelector(
+              command: fManager.updateRating,
+              initial: fManager.rating,
+              icons: JournalManager.ratingIcons,
+              iconSize: 20,
+            )
+          ],
+        ),
         buttons: <Widget>[
-          // IconButton(
-          //   icon: Icon(Icons.delete),
-          //   onPressed: () => ,
-          // )
+          IconButton(
+            icon: Icon(Icons.delete),
+            tooltip: t(c, 'actions.delete'),
+            onPressed: () => manager.destroyEntry(index),
+          )
         ],
       );
 
   // Actions for AppBar
   @override
   List<Widget> buildActions(BuildContext c, JournalManager manager) => [
-        IconButtonTr(
+        IconButton(
           icon: const Icon(Icons.save),
-          tooltip: 'actions.save',
+          tooltip: t(c, 'actions.save'),
           onPressed: manager.save,
         ),
-        IconButtonTr(
+        IconButton(
           icon: const Icon(Icons.delete),
-          tooltip: 'actions.delete',
+          tooltip: t(c, 'actions.delete'),
           onPressed: manager.destroy,
         ),
       ];
+
+  // Floating button
+  @override
+  Widget buildFloatingButton(BuildContext c, JournalManager manager) =>
+      FloatingActionButton(
+        onPressed: manager.appendEntry,
+        tooltip: t(c, 'actions.add'),
+        child: Icon(Icons.add),
+      );
 
   @override
   JournalManager createManager() => JournalManagerImpl(this.journalId);

@@ -27,10 +27,15 @@
         },
         "setting": {
             "no_password": "Password should be present"
+        },
+        "journal": {
+            "date_taken": "Date already taken"
         }
     },
     "datetime": {
-        "date": "y/M/d"
+        "date": "y/M/d",
+        "datetime": "",
+        "time": ""
     },
     "note": {
         "name": "Name",
@@ -39,7 +44,8 @@
     "journal": {
         "name": "Name",
         "body": "Body",
-        "entry": "Entry {num}"
+        "entry": "Entry {num}",
+        "date": "Date"
     },
     "setting": {
         "security": "Security",

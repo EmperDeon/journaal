@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:journal/managers/note.dart';
 import 'package:journal/screens/components/fields/text.dart';
-import 'package:journal/screens/components/i18n/icon_button.dart';
 import 'package:journal/screens/base.dart';
 
 class NoteScreen extends BaseScreen<NoteManager> {
@@ -36,14 +35,14 @@ class NoteScreen extends BaseScreen<NoteManager> {
   // Actions for AppBar
   @override
   List<Widget> buildActions(BuildContext c, NoteManager manager) => [
-        IconButtonTr(
+        IconButton(
           icon: const Icon(Icons.save),
-          tooltip: 'actions.save',
+          tooltip: t(c, 'actions.save'),
           onPressed: manager.save,
         ),
-        IconButtonTr(
+        IconButton(
           icon: const Icon(Icons.delete),
-          tooltip: 'actions.delete',
+          tooltip: t(c, 'actions.delete'),
           onPressed: manager.destroy,
         ),
       ];

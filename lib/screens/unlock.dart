@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:journal/managers/unlock.dart';
 import 'package:journal/screens/components/fields/text.dart';
-import 'package:journal/screens/components/i18n/text.dart';
 import 'package:journal/screens/base.dart';
 
 class UnlockScreen extends BaseScreen<UnlockManager> {
@@ -29,8 +28,8 @@ class UnlockScreen extends BaseScreen<UnlockManager> {
             color: Colors.blue,
             child: Padding(
               padding: EdgeInsets.all(20.0),
-              child: TextTr(
-                'actions.unlock',
+              child: Text(
+                t(c, 'actions.unlock'),
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
             ),

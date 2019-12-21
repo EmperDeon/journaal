@@ -32,6 +32,7 @@ class JournalsScreen extends BaseScreen<JournalsManager> {
 
     if (journal != null)
       return ListTile(
+        key: ValueKey(id),
         title: Text(l(c, 'date', journal.date)),
         onTap: () => manager.openJournal(id),
       );

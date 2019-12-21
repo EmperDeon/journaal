@@ -1,25 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:journal/services/i18n.dart';
 
 class Section extends Builder {
   Section({
-    @required String title,
+    String title,
+    String titleTr,
     @required Widget child,
     List<Widget> buttons = const [],
-    double leftPadding = 8,
+    double leftPadding = 0,
+    double topPadding = 24,
     Key key,
-  }) : super(
+  })  : assert(title != null || titleTr != null),
+        super(
           builder: (c) {
             TextStyle titleStyle = Theme.of(c).textTheme.title;
             return Padding(
-              padding: EdgeInsets.fromLTRB(leftPadding, 24, 0, 0),
+              padding: EdgeInsets.fromLTRB(leftPadding, topPadding, 0, 0),
               child: Column(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                           Expanded(
                             child: Text(
-                              title,
+                              titleTr == null ? title : I18n.t(c, titleTr),
                               style: titleStyle,
                             ),
                           )

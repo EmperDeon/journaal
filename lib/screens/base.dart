@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:journal/managers/base.dart';
+import 'package:journal/presenters/picker.dart';
 import 'package:journal/presenters/snackbar.dart';
 import 'package:journal/screens/components/basic_drawer.dart';
-import 'package:journal/screens/components/i18n/text.dart';
 import 'package:journal/services/i18n.dart';
 
 abstract class BaseScreen<T extends BaseManager> extends StatefulWidget {
@@ -25,7 +25,7 @@ abstract class BaseScreen<T extends BaseManager> extends StatefulWidget {
 
   // Title for screen
   Widget buildTitle(BuildContext c, T manager) =>
-      titleTr == null ? Text(title) : TextTr(titleTr);
+      Text(titleTr == null ? title : t(c, titleTr));
 
   // Actions for AppBar
   List<Widget> buildActions(BuildContext c, T manager) => [];
@@ -86,6 +86,7 @@ class _BaseScreenState<T extends BaseManager> extends State<BaseScreen> {
       if (data == null) return;
 
       if (data is SnackbarPresentation) presentSnackBar(context, data);
+      if (data is PickerPresentation) presentPicker(context, data);
     });
 
     super.didChangeDependencies();
@@ -94,6 +95,12 @@ class _BaseScreenState<T extends BaseManager> extends State<BaseScreen> {
   // Show snackbar
   void presentSnackBar(BuildContext c, SnackbarPresentation presentation) {
     scaffoldKey.currentState.showSnackBar(presentation.toBar(c));
+
+    manager.presentToScaffold(null);
+  }
+
+  void presentPicker(BuildContext c, PickerPresentation presentation) {
+    presentation.toPicker().showModal(c);
 
     manager.presentToScaffold(null);
   }

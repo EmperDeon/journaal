@@ -1,11 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:journal/managers/fields/base.dart';
 import 'package:rxdart/rxdart.dart';
-
-typedef RxFieldManagerOnChanged = Function(String);
-typedef RxFieldManagerValidate = String Function(String);
-
-// Mode
-enum ValidateMode { none, onChanged }
 
 // State manager for TextField
 // Provides:
@@ -17,7 +12,7 @@ class RxTextFieldManager {
   TextEditingController controller = TextEditingController();
   FocusNode focus = FocusNode();
   FocusNode nextFocus;
-  ValidateMode mode;
+  RxValidateMode mode;
 
   RxFieldManagerOnChanged _onChangedCallback;
   RxFieldManagerValidate _validateWith;
@@ -26,7 +21,7 @@ class RxTextFieldManager {
     String initialValue,
     RxFieldManagerOnChanged onChangedCallback,
     RxFieldManagerValidate validateWith,
-    this.mode = ValidateMode.onChanged,
+    this.mode = RxValidateMode.onChanged,
     this.nextFocus,
   }) {
     text = initialValue;
@@ -68,7 +63,7 @@ class RxTextFieldManager {
   void _onChanged() {
     _onChangedCallback(text);
 
-    if (mode == ValidateMode.onChanged) {
+    if (mode == RxValidateMode.onChanged) {
       validate();
     }
 

@@ -13,8 +13,9 @@ class I18n {
     }
   }
 
-  static String l(BuildContext c, String key, DateTime dateTime) {
-    if (dateTime == null) return 'null datetime';
+  static String l(BuildContext c, String key, DateTime dateTime,
+      {String nullMessage = 'null datetime'}) {
+    if (dateTime == null) return nullMessage;
 
     DateFormat format = DateFormat(
         t(c, 'datetime.' + key), FlutterI18n.currentLocale(c).toString());

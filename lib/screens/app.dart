@@ -12,15 +12,16 @@ import 'package:journal/screens/unlock.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/services.dart';
 import 'package:journal/util/build_env.dart';
+import 'package:journal/util/scoped_logger.dart';
 
-class App extends StatefulWidget {
+class App extends StatefulWidget with ScopedLogger {
   Widget build(BuildContext c, _AppState state) {
+    logger.i('Rebuilding App');
+
     return StreamBuilder(
       stream: state.manager.lockingStream,
       initialData: {},
       builder: (_, snap) {
-        print('Built AppState with ${snap.data}');
-
         bool locked = snap.data['locked'] ?? true;
         locked = locked && (snap.data['lockingEnabled'] ?? true);
 
@@ -94,7 +95,7 @@ class App extends StatefulWidget {
   State<StatefulWidget> createState() => _AppState();
 }
 
-class _AppState extends State<App> with WidgetsBindingObserver {
+class _AppState extends State<App> with WidgetsBindingObserver, ScopedLogger {
   AppManager manager = sl<AppManager>();
 
   bool firstBuild = true;
@@ -134,6 +135,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   // Routes
   Route<dynamic> appGenerateRoute(RouteSettings settings) {
     Function builder = (_) => NotesScreen();
+
+    logger.i('Navigating to ${settings.name} with ${settings.arguments}');
 
     switch (settings.name) {
       case NotesScreen.routeName:

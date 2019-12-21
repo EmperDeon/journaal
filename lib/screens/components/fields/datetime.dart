@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:journal/managers/fields/rx_datetime.dart';
 import 'package:journal/services/i18n.dart';
-import 'package:journal/managers/fields/rx_field.dart';
 
-class RxTextField extends StatelessWidget {
-  final RxTextFieldManager manager;
+class RxDateTimeField extends StatelessWidget {
+  final RxDateTimeFieldManager manager;
   final Widget Function(BuildContext, String) builder;
 
   // Title for field
@@ -14,12 +14,11 @@ class RxTextField extends StatelessWidget {
   // Key for title translation
   final String titleTr;
 
-  RxTextField(
+  RxDateTimeField(
     this.manager, {
     this.title,
     this.titleTr,
     Key key,
-    String initialValue,
     FocusNode focusNode,
     InputDecoration decoration = const InputDecoration(),
     TextInputType keyboardType,
@@ -44,7 +43,7 @@ class RxTextField extends StatelessWidget {
     ValueChanged<String> onChanged,
     GestureTapCallback onTap,
     VoidCallback onEditingComplete,
-    ValueChanged<String> onFieldSubmitted,
+    ValueChanged<String> onSubmitted,
     FormFieldSetter<String> onSaved,
     FormFieldValidator<String> validator,
     List<TextInputFormatter> inputFormatters,
@@ -61,14 +60,9 @@ class RxTextField extends StatelessWidget {
                 labelText: titleTr == null ? title : I18n.t(c, titleTr),
                 errorText: error == null ? null : I18n.t(c, error),
               ),
+              readOnly: true,
               controller: manager.controller,
-              focusNode: manager.focus,
-              onSubmitted: (v) {
-                if (manager.nextFocus != null)
-                  FocusScope.of(c).requestFocus(manager.nextFocus);
-
-                onFieldSubmitted(v);
-              },
+              onTap: manager.openPicker(c),
 
               // Delegated
               keyboardType: keyboardType,
@@ -80,7 +74,6 @@ class RxTextField extends StatelessWidget {
               textCapitalization: textCapitalization,
               autofocus: autofocus,
               toolbarOptions: toolbarOptions,
-              readOnly: readOnly,
               showCursor: showCursor,
               obscureText: obscureText,
               autocorrect: autocorrect,
@@ -89,9 +82,9 @@ class RxTextField extends StatelessWidget {
               minLines: minLines,
               expands: expands,
               maxLength: maxLength,
-              onTap: onTap,
               onEditingComplete: onEditingComplete,
               onChanged: onChanged,
+              onSubmitted: onSubmitted,
               inputFormatters: inputFormatters,
               enabled: enabled,
               cursorWidth: cursorWidth,
@@ -106,9 +99,16 @@ class RxTextField extends StatelessWidget {
   @override
   Widget build(BuildContext c) {
     return StreamBuilder<String>(
-      stream: manager.errorStream,
-      initialData: null,
-      builder: (c, snapshot) => builder(c, snapshot.data),
-    );
+        stream: manager.errorStream,
+        initialData: null,
+        builder: (c, valueSnap) {
+          manager.updateController(c);
+
+          return StreamBuilder<String>(
+            stream: manager.errorStream,
+            initialData: null,
+            builder: (c, snapshot) => builder(c, snapshot.data),
+          );
+        });
   }
 }

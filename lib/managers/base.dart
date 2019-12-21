@@ -1,5 +1,4 @@
 import 'package:journal/presenters/base.dart';
-import 'package:journal/presenters/snackbar.dart';
 import 'package:rxdart/rxdart.dart';
 
 class BaseManager {
@@ -13,7 +12,7 @@ class BaseManager {
       _scaffoldSubject.stream.distinct();
 
   // Adds presentation to scaffoldStream, then null to clear later states
-  void presentToScaffold(SnackbarPresentation bar) {
+  void presentToScaffold(ScaffoldPresentation bar) {
     _scaffoldSubject.add(bar);
   }
 }

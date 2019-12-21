@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_version/get_version.dart';
-import 'package:journal/screens/components/i18n/text.dart';
 import 'package:journal/services.dart';
+import 'package:journal/services/i18n.dart';
 import 'package:journal/services/navigation_service.dart';
 
 /// Drawer for navigation
@@ -26,8 +26,8 @@ class BasicDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 DrawerHeader(
-                  child: TextTr(
-                    'app.name',
+                  child: Text(
+                    I18n.t(c, 'app.name'),
                     style: titleTheme,
                     // textAlign: TextAlign.center,
                   ),
@@ -35,34 +35,35 @@ class BasicDrawer extends StatelessWidget {
                     color: theme.primaryColor,
                   ),
                 ),
-                buildTile('screens.notes', '/', Icons.list),
-                buildTile('screens.journals', '/journals', Icons.format_list_numbered),
-                buildTile('screens.settings', '/settings', Icons.settings),
+                buildTile(c, 'screens.notes', '/', Icons.list),
+                buildTile(c, 'screens.journals', '/journals',
+                    Icons.format_list_numbered),
+                buildTile(c, 'screens.settings', '/settings', Icons.settings),
               ],
             ),
           ),
-          buildFooter(footerText),
+          buildFooter(c, footerText),
         ],
       ),
     );
   }
 
-  Widget buildTile(String key, String path, IconData icon) {
+  Widget buildTile(BuildContext c, String key, String path, IconData icon) {
     return ListTile(
       leading: Icon(icon),
-      title: TextTr(key),
+      title: Text(I18n.t(c, key)),
       onTap: () => navigateTo(path),
       selected: path == currentRoute,
     );
   }
 
-  Widget buildFooter(TextStyle textStyle) {
+  Widget buildFooter(BuildContext c, TextStyle textStyle) {
     return ListTile(
       title: Row(
         children: <Widget>[
           Expanded(
-            child: TextTr(
-              'app.version',
+            child: Text(
+              I18n.t(c, 'app.version'),
               textAlign: TextAlign.left,
               style: textStyle,
             ),

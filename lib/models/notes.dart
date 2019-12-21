@@ -1,5 +1,6 @@
 import 'package:journal/models/note.dart';
 import 'package:journal/models/base.dart';
+import 'package:uuid/uuid.dart';
 
 /// Notes model, loaded from Storage
 ///
@@ -13,6 +14,7 @@ abstract class NotesModel {
   Stream<Map<String, Note>> get itemsStream;
 
   // CRUD
+  String create();
   void destroy(String id);
   Note operator [](String id);
   Note at(String id);
@@ -31,6 +33,17 @@ class NotesModelImpl extends BaseModel<Map<String, Note>>
   //
   // CRUD
   //
+
+  @override
+  String create() {
+    String key = Uuid().v4();
+    Note item = Note('Untitled note', '');
+
+    _items[key] = item;
+    updateSubject();
+
+    return key;
+  }
 
   @override
   void destroy(String id) {
@@ -67,10 +80,9 @@ class NotesModelImpl extends BaseModel<Map<String, Note>>
       _items = object.map((k, item) => MapEntry(k, Note.from(item)));
     } else if (object != null) {
       var type = object.runtimeType;
-      print('Unsupported type for Notes: $object, $type');
+      logger.w('Unsupported type for Notes: $object, $type');
     }
 
-    print("Loaded $_items");
     updateSubject();
   }
 

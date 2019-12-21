@@ -3,7 +3,8 @@ import 'package:journal/managers/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/services.dart';
-import 'package:journal/util/field_managers/rx_field.dart';
+import 'package:journal/managers/fields/rx_field.dart';
+import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/utils.dart';
 import 'package:rx_command/rx_command.dart';
 
@@ -19,7 +20,9 @@ abstract class SettingsManager extends BaseManager {
   void save();
 }
 
-class SettingsManagerImpl extends BaseManager implements SettingsManager {
+class SettingsManagerImpl extends BaseManager
+    with ScopedLogger
+    implements SettingsManager {
   SettingsModel model = sl<SettingsModel>();
   RxTextFieldManager passwordField;
   String _locale, _passwordMode;
@@ -73,7 +76,9 @@ class SettingsManagerImpl extends BaseManager implements SettingsManager {
 
   @override
   void save() {
-    if (_passwordMode == 'pin') {
+    if (_passwordMode == 'none') {
+      passwordField.text = '';
+    } else if (_passwordMode == 'pin') {
       // Remove all symbols, that are not present on phone keyboard
       passwordField.text =
           passwordField.text.replaceAll(new RegExp(r'[^0-9.,\-+\ ]'), '');
@@ -86,10 +91,11 @@ class SettingsManagerImpl extends BaseManager implements SettingsManager {
       model.locale = _locale;
       model.passwordMode = _passwordMode;
 
+      model.updateSubject();
+
       sl<AppManager>().unlockWith(model.password);
 
-      print('Saved settings: ${model.save()}');
-      sl<NavigationService>().pop();
+      sl<NavigationService>().replaceWith('/journals');
     }
   }
 }

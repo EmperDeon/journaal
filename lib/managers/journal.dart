@@ -1,14 +1,30 @@
+import 'package:flutter/widgets.dart';
 import 'package:journal/managers/base.dart';
+import 'package:journal/managers/fields/base.dart';
+import 'package:journal/managers/fields/rx_datetime.dart';
 import 'package:journal/models/journals.dart';
 import 'package:journal/models/journal.dart';
 import 'package:journal/presenters/snackbar.dart';
 import 'package:journal/services.dart';
 import 'package:journal/services/navigation_service.dart';
-import 'package:journal/util/field_managers/rx_field.dart';
+import 'package:journal/util/emoticons_icons.dart';
+import 'package:journal/managers/fields/rx_field.dart';
+import 'package:rx_command/rx_command.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class JournalManager extends BaseManager {
+  static const Map<int, IconData> ratingIcons = {
+    -2: Emoticons.tired,
+    -1: Emoticons.frown,
+    0: Emoticons.meh,
+    1: Emoticons.smile,
+    2: Emoticons.laugh_beam
+  };
+
   Stream<List<JournalEntryManager>> get entriesStream;
+
+  RxDateTimeFieldManager date;
+  RxCommand<DateTime, DateTime> updateDate;
 
   // Entries methods
   void appendEntry();
@@ -25,12 +41,17 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
   JournalsModel model = sl<JournalsModel>();
   Journal journal;
   String journalId;
+  RxDateTimeFieldManager date;
 
   JournalManagerImpl(this.journalId) {
     journal = model.at(journalId);
+    date = RxDateTimeFieldManager(
+        mode: RxDateTimeMode.date,
+        initialValue: journal.date,
+        validateWith: dateValidator);
 
     entries = journal.entries
-        .map((item) => JournalEntryManager(item.title, item.body))
+        .map((item) => JournalEntryManager(item.title, item.body, item.rating))
         .toList();
 
     // Should be at least one
@@ -57,9 +78,18 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
 
   Stream<List<JournalEntryManager>> get entriesStream => _entriesSubject.stream;
 
+  RxCommand<DateTime, DateTime> updateDate;
+
   void updateSubjects() {
     _entriesSubject.add(entries);
   }
+
+  String dateValidator(DateTime value) =>
+      model.hasDate(value) ? 'errors.journal.date_taken' : null;
+
+  //
+  // Entries methods
+  //
 
   void appendEntry() {
     entries.add(JournalEntryManager());
@@ -74,8 +104,10 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
   }
 
   void destroyEntry(int index) {
-    entries.removeAt(index);
-    updateSubjects();
+    presentToScaffold(SnackbarPresenter.removeWarning(() {
+      entries.removeAt(index);
+      updateSubjects();
+    }));
   }
 
   //
@@ -84,8 +116,10 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
 
   @override
   void save() {
-    journal.entries =
-        entries.map((m) => JournalEntry(m.title.text, m.body.text, 0));
+    journal.date = date.value;
+    journal.entries = entries
+        .map((m) => JournalEntry(m.title.text, m.body.text, m.rating))
+        .toList();
     model.setJournalAt(journalId, journal);
 
     navigator.pop();
@@ -101,12 +135,22 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
 }
 
 class JournalEntryManager {
-  RxTextFieldManager title, body;
+  int rating;
 
-  JournalEntryManager([String initialTitle = '', String initialBody = '']) {
+  RxTextFieldManager title, body;
+  RxCommand<int, int> updateRating;
+
+  JournalEntryManager([
+    String initialTitle = '',
+    String initialBody = '',
+    this.rating = 0,
+  ]) {
     title = RxTextFieldManager(initialValue: initialTitle);
     body = RxTextFieldManager(initialValue: initialBody);
+    updateRating = RxCommand.createSync(_updateRating);
 
     title.nextFocus = body.focus;
   }
+
+  int _updateRating(int newValue) => rating = newValue;
 }

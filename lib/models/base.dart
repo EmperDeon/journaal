@@ -1,9 +1,10 @@
 import 'package:journal/services.dart';
+import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/storable.dart';
 import 'package:journal/util/storage.dart';
 import 'package:rxdart/rxdart.dart';
 
-abstract class BaseModel<T> implements Storable {
+abstract class BaseModel<T> with ScopedLogger implements Storable {
   final Storage _storage = sl<Storage>();
   final String _storableKey;
   final T skeletonValue;
@@ -14,11 +15,18 @@ abstract class BaseModel<T> implements Storable {
   }
 
   void reload() {
-    load(_storage.get(_storableKey));
+    dynamic loaded = _storage.get(_storableKey);
+
+    logger.v('Loaded from storage: $loaded');
+
+    load(loaded);
   }
 
   void saveToStorage() {
-    _storage.set(_storableKey, save());
+    dynamic saved = save();
+
+    logger.v('Saving to storage: $saved');
+    _storage.set(_storableKey, saved);
     _storage.saveToStorage();
   }
 

@@ -4,7 +4,7 @@ import 'package:journal/models/note.dart';
 import 'package:journal/presenters/snackbar.dart';
 import 'package:journal/services.dart';
 import 'package:journal/services/navigation_service.dart';
-import 'package:journal/util/field_managers/rx_field.dart';
+import 'package:journal/managers/fields/rx_field.dart';
 
 abstract class NoteManager extends BaseManager {
   RxTextFieldManager title, body;

@@ -1,5 +1,7 @@
 import 'package:journal/models/journal.dart';
 import 'package:journal/models/base.dart';
+import 'package:journal/util/utils.dart';
+import 'package:uuid/uuid.dart';
 
 /// Journals model, loaded from Storage
 ///
@@ -13,10 +15,13 @@ abstract class JournalsModel {
   Stream<Map<String, Journal>> get itemsStream;
 
   // CRUD
+  String create();
   void destroy(String id);
   Journal operator [](String id);
   Journal at(String id);
   void setJournalAt(String id, Journal value);
+
+  bool hasDate(DateTime value);
 }
 
 class JournalsModelImpl extends BaseModel<Map<String, Journal>>
@@ -28,6 +33,17 @@ class JournalsModelImpl extends BaseModel<Map<String, Journal>>
   //
   // CRUD
   //
+
+  @override
+  String create() {
+    String key = Uuid().v4();
+    Journal item = Journal(DateTime.now());
+
+    _items[key] = item;
+    updateSubject();
+
+    return key;
+  }
 
   @override
   void destroy(String id) {
@@ -51,6 +67,10 @@ class JournalsModelImpl extends BaseModel<Map<String, Journal>>
     updateSubject();
   }
 
+  @override
+  bool hasDate(DateTime value) =>
+      !allTrue(_items.values, (Journal val) => value != val.date);
+
   //
   // Saving/Loading
   //
@@ -64,10 +84,9 @@ class JournalsModelImpl extends BaseModel<Map<String, Journal>>
       _items = object.map((k, item) => MapEntry(k, Journal.from(item)));
     } else if (object != null) {
       var type = object.runtimeType;
-      print('Unsupported type for Journals: $object, $type');
+      logger.w('Unsupported type for Journals: $object, $type');
     }
 
-    print("Loaded $_items");
     updateSubject();
   }
 

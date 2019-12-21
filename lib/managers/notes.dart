@@ -3,7 +3,6 @@ import 'package:journal/models/notes.dart';
 import 'package:journal/models/note.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/services.dart';
-import 'package:uuid/uuid.dart';
 
 abstract class NotesManager extends BaseManager {
   Stream<List<String>> get itemKeysStream;
@@ -38,10 +37,7 @@ class NotesManagerImpl extends BaseManager implements NotesManager {
 
   @override
   void create() {
-    String key = Uuid().v4();
-    Note item = Note('Untitled note', '');
-
-    model.setNoteAt(key, item);
+    String key = model.create();
 
     navigator.navigateTo('/note', arguments: key);
   }

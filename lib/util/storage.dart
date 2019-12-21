@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:journal/models/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
+import 'package:journal/util/scoped_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Storage {
+class Storage with ScopedLogger {
   Map<String, dynamic> objects = {};
   Map<String, BaseModel> models = {};
 
@@ -28,7 +29,6 @@ class Storage {
   }
 
   void saveToStorage() async {
-    print('Saving to storage: ${jsonEncode(objects)}');
     await preferences.setString('storage', jsonEncode(objects));
   }
 

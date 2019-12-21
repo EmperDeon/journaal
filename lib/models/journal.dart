@@ -1,3 +1,4 @@
+import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/storable.dart';
 
 /// Journal model
@@ -9,12 +10,12 @@ import 'package:journal/util/storable.dart';
 ///   tags: List<String>,
 /// }
 ///
-class Journal implements Storable {
+class Journal with ScopedLogger implements Storable {
   DateTime date;
   List<JournalEntry> entries = [];
   List<String> tags = [];
 
-  Journal();
+  Journal(this.date);
 
   Journal.from(dynamic object) {
     load(object);
@@ -29,7 +30,7 @@ class Journal implements Storable {
       entries = JournalEntry.castFromList(object['entries']) ?? [];
       tags = List.castFrom<dynamic, String>(object['tags'] ?? []);
     } else if (object != null) {
-      print('Unsupported type for Journal: $object');
+      logger.w('Unsupported type for Journal: $object');
     }
   }
 
@@ -52,7 +53,7 @@ class Journal implements Storable {
 ///   rating: int
 /// }
 ///
-class JournalEntry implements Storable {
+class JournalEntry with ScopedLogger implements Storable {
   String title = '', body = '';
   int rating = 0;
 
@@ -76,7 +77,7 @@ class JournalEntry implements Storable {
       body = object['body'] ?? '';
       rating = object['rating'] ?? 0;
     } else if (object != null) {
-      print('Unsupported type for JournalEntry: $object');
+      logger.w('Unsupported type for JournalEntry: $object');
     }
   }
 

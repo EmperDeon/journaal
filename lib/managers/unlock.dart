@@ -1,8 +1,9 @@
 import 'package:journal/managers/app.dart';
 import 'package:journal/managers/base.dart';
+import 'package:journal/managers/fields/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
-import 'package:journal/util/field_managers/rx_field.dart';
+import 'package:journal/managers/fields/rx_field.dart';
 import 'package:journal/util/storage.dart';
 
 abstract class UnlockManager extends BaseManager {
@@ -20,7 +21,7 @@ class UnlockManagerImpl extends BaseManager implements UnlockManager {
 
   UnlockManagerImpl() {
     password = RxTextFieldManager(
-      mode: ValidateMode.none,
+      mode: RxValidateMode.none,
       onChangedCallback: passwordChanged,
       validateWith: passwordValidator,
     );
