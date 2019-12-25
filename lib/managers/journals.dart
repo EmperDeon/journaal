@@ -3,7 +3,6 @@ import 'package:journal/models/journals.dart';
 import 'package:journal/models/journal.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/services.dart';
-import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/utils.dart';
 
 abstract class JournalsManager extends BaseManager {
@@ -18,7 +17,6 @@ abstract class JournalsManager extends BaseManager {
 }
 
 class JournalsManagerImpl extends BaseManager
-    with ScopedLogger
     implements JournalsManager {
   JournalsModel model = sl<JournalsModel>();
   NavigationService navigator = sl<NavigationService>();

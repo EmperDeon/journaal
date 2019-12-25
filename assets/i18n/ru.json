@@ -15,11 +15,14 @@
         "add": "Добавить",
         "save": "Сохранить",
         "delete": "Удалить",
-        "unlock": "Разблокировать"
+        "unlock": "Разблокировать",
+        "list": "Открыть список",
+        "lock": "Заблокировать"
     },
     "snackbar": {
         "are_you_sure": "Вы уверены ?",
-        "yes": "Да"
+        "yes": "Да",
+        "saved": "Сохранено"
     },
     "errors": {
         "unlock": {
@@ -27,14 +30,25 @@
         },
         "setting": {
             "no_password": "Пароль не должен быть пустым"
+        },
+        "journal": {
+            "date_taken": "Эта дата уже есть"
         }
     },
     "datetime": {
-        "date": "d.M.y"
+        "date": "d.M.y",
+        "datetime": "",
+        "time": ""
     },
     "note": {
         "name": "Название",
         "body": "Текст"
+    },
+    "journal": {
+        "name": "Название",
+        "body": "Текст",
+        "entry": "Запись {num}",
+        "date": "Дата"
     },
     "setting": {
         "security": "Безопасность",
@@ -42,6 +56,7 @@
         "password": "Пароль",
         "language": "Язык",
         "passwordMode": "Режим блокировки",
+        "autoUnlock": "Авто разблокировка",
         "languages": {
             "en": "English",
             "ru": "Русский"

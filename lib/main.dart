@@ -22,8 +22,8 @@ void main() async {
 Future initStorage() async {
   await DotEnv().load('.env');
 
-  sl.registerSingleton<BuildEnv>(DebugBuildEnv());
-  // sl.registerSingleton<BuildEnv>(ReleaseBuildEnv());
+  // sl.registerSingleton<BuildEnv>(DebugBuildEnv());
+  sl.registerSingleton<BuildEnv>(ReleaseBuildEnv());
 
   Storage storage = Storage();
   storage.loadFromStorage();

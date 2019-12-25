@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:journal/managers/app.dart';
 import 'package:journal/managers/notes.dart';
 import 'package:journal/models/note.dart';
 import 'package:journal/screens/components/basic_drawer.dart';
 import 'package:journal/screens/base.dart';
+import 'package:journal/screens/components/locking_builder.dart';
+import 'package:journal/services.dart';
 
 class NotesScreen extends BaseScreen<NotesManager> {
   static const String routeName = '/';
@@ -42,6 +45,17 @@ class NotesScreen extends BaseScreen<NotesManager> {
   // Screen Drawer
   @override
   BasicDrawer buildDrawer() => BasicDrawer(currentRoute: routeName);
+
+  @override
+  List<Widget> buildActions(BuildContext c, NotesManager manager) => [
+        LockingBuilder(
+          enabledBuilder: (_) => IconButton(
+            icon: Icon(Icons.lock),
+            tooltip: t(c, 'actions.lock'),
+            onPressed: sl<AppManager>().lock,
+          ),
+        )
+      ];
 
   @override
   Widget buildFloatingButton(BuildContext c, NotesManager manager) =>

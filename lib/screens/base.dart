@@ -77,19 +77,14 @@ class _BaseScreenState<T extends BaseManager> extends State<BaseScreen> {
   void initState() {
     manager = widget.createManager();
 
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
     manager.scaffoldStream.listen((data) {
-      if (data == null) return;
+      if (data == null || context == null) return;
 
       if (data is SnackbarPresentation) presentSnackBar(context, data);
       if (data is PickerPresentation) presentPicker(context, data);
     });
 
-    super.didChangeDependencies();
+    super.initState();
   }
 
   // Show snackbar

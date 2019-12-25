@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:journal/managers/settings.dart';
 import 'package:journal/screens/components/basic_drawer.dart';
 import 'package:journal/screens/components/fields/dropdown.dart';
+import 'package:journal/screens/components/fields/switch.dart';
 import 'package:journal/screens/components/fields/text.dart';
 import 'package:journal/screens/base.dart';
 import 'package:journal/screens/components/section.dart';
@@ -43,6 +44,16 @@ class SettingsScreen extends BaseScreen<SettingsManager> {
                     keyboardType: snap.data == 'pin'
                         ? TextInputType.number
                         : TextInputType.visiblePassword,
+                  ),
+                ),
+                StreamBuilder(
+                  stream: manager.updatePasswordMode,
+                  initialData: manager.passwordMode ?? passwordModes.first,
+                  builder: (_, snap) => RxSwitchField(
+                    titleTr: 'setting.autoUnlock',
+                    enabled: snap.data != 'none',
+                    value: manager.autoUnlock,
+                    valueCommand: manager.updateAutoUnlock,
                   ),
                 ),
               ],

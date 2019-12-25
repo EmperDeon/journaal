@@ -4,10 +4,14 @@ import 'package:journal/screens/components/fields/text.dart';
 import 'package:journal/screens/base.dart';
 
 class UnlockScreen extends BaseScreen<UnlockManager> {
+  static const String routeName = '/unlock';
+
   UnlockScreen({Key key}) : super(titleTr: 'screens.unlock', key: key);
 
   @override
   Widget buildContent(BuildContext c, UnlockManager manager) {
+    ThemeData theme = Theme.of(c);
+
     return Padding(
       padding: const EdgeInsets.all(64.0),
       child: Column(
@@ -25,7 +29,7 @@ class UnlockScreen extends BaseScreen<UnlockManager> {
           ),
           Padding(padding: EdgeInsets.all(25.0)),
           RaisedButton(
-            color: Colors.blue,
+            color: theme.primaryColor,
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(

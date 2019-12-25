@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:journal/managers/journal.dart';
+import 'package:journal/screens/components/basic_drawer.dart';
 import 'package:journal/screens/components/fields/datetime.dart';
 import 'package:journal/screens/components/fields/icon_selector.dart';
 import 'package:journal/screens/components/fields/text.dart';
@@ -21,6 +22,10 @@ class JournalScreen extends BaseScreen<JournalManager> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: ListView(
         children: <Widget>[
+          RxTextField(
+            manager.name,
+            titleTr: 'journal.name',
+          ),
           RxDateTimeField(
             manager.date,
             titleTr: 'journal.date',
@@ -83,7 +88,15 @@ class JournalScreen extends BaseScreen<JournalManager> {
 
   // Actions for AppBar
   @override
-  List<Widget> buildActions(BuildContext c, JournalManager manager) => [
+  List<Widget> buildActions(BuildContext c, JournalManager manager) =>
+      <IconButton>[
+        (this.journalId == null
+            ? IconButton(
+                icon: const Icon(Icons.list),
+                tooltip: t(c, 'actions.list'),
+                onPressed: manager.openList,
+              )
+            : null),
         IconButton(
           icon: const Icon(Icons.save),
           tooltip: t(c, 'actions.save'),
@@ -94,7 +107,7 @@ class JournalScreen extends BaseScreen<JournalManager> {
           tooltip: t(c, 'actions.delete'),
           onPressed: manager.destroy,
         ),
-      ];
+      ].compact();
 
   // Floating button
   @override
@@ -104,6 +117,11 @@ class JournalScreen extends BaseScreen<JournalManager> {
         tooltip: t(c, 'actions.add'),
         child: Icon(Icons.add),
       );
+
+  // Screen Drawer
+  @override
+  BasicDrawer buildDrawer() =>
+      this.journalId == null ? BasicDrawer(currentRoute: routeName) : null;
 
   @override
   JournalManager createManager() => JournalManagerImpl(this.journalId);

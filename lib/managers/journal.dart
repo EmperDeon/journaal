@@ -5,6 +5,7 @@ import 'package:journal/managers/fields/rx_datetime.dart';
 import 'package:journal/models/journals.dart';
 import 'package:journal/models/journal.dart';
 import 'package:journal/presenters/snackbar.dart';
+import 'package:journal/screens/journals.dart';
 import 'package:journal/services.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/util/emoticons_icons.dart';
@@ -23,6 +24,7 @@ abstract class JournalManager extends BaseManager {
 
   Stream<List<JournalEntryManager>> get entriesStream;
 
+  RxTextFieldManager name;
   RxDateTimeFieldManager date;
   RxCommand<DateTime, DateTime> updateDate;
 
@@ -34,17 +36,32 @@ abstract class JournalManager extends BaseManager {
   // Journal methods
   void save();
   void destroy();
+  void openList();
 }
 
-class JournalManagerImpl extends BaseManager implements JournalManager {
+class JournalManagerImpl extends BaseManager
+    implements JournalManager {
   NavigationService navigator = sl<NavigationService>();
   JournalsModel model = sl<JournalsModel>();
   Journal journal;
   String journalId;
+  RxTextFieldManager name;
   RxDateTimeFieldManager date;
 
   JournalManagerImpl(this.journalId) {
+    if (this.journalId == null) {
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+
+      if (model.hasDate(today))
+        journalId = model.keyAtDate(today);
+      else
+        journalId = model.create(today);
+    }
+
     journal = model.at(journalId);
+
+    name = RxTextFieldManager(initialValue: journal.name);
     date = RxDateTimeFieldManager(
         mode: RxDateTimeMode.date,
         initialValue: journal.date,
@@ -115,21 +132,27 @@ class JournalManagerImpl extends BaseManager implements JournalManager {
   //
 
   @override
+  void openList([replace = false]) => replace
+      ? navigator.replaceWith(JournalsScreen.routeName)
+      : navigator.navigateTo(JournalsScreen.routeName);
+
+  @override
   void save() {
+    journal.name = name.text;
     journal.date = date.value;
     journal.entries = entries
         .map((m) => JournalEntry(m.title.text, m.body.text, m.rating))
         .toList();
     model.setJournalAt(journalId, journal);
 
-    navigator.pop();
+    presentToScaffold(SnackbarPresenter.saved());
   }
 
   @override
   void destroy() {
     presentToScaffold(SnackbarPresenter.removeWarning(() {
       model.destroy(journalId);
-      navigator.pop();
+      openList(true);
     }));
   }
 }

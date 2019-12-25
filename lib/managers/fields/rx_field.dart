@@ -36,11 +36,11 @@ class RxTextFieldManager {
     _errorSubject.close();
   }
 
-  void reset() {
+  void reset([resetError = true]) {
     text = '';
     _onChanged();
 
-    _errorSubject.add(null);
+    if (resetError) _errorSubject.add(null);
   }
 
   //

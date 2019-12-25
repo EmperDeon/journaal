@@ -38,7 +38,7 @@ class UnlockManagerImpl extends BaseManager implements UnlockManager {
       : 'errors.unlock.incorrect_password';
 
   void passwordChanged(String pass) {
-    if (storage.isCorrectPassword(pass)) {
+    if (settings.autoUnlock && storage.isCorrectPassword(pass)) {
       unlockWith(pass);
     }
   }
@@ -55,7 +55,7 @@ class UnlockManagerImpl extends BaseManager implements UnlockManager {
 
     if (result) unlockWith(password.text);
 
-    password.reset();
+    password.reset(false);
   }
 
   bool unlockWith(String pass) {

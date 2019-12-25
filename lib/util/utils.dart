@@ -66,3 +66,23 @@ List<K> orderedKeys<K, V>(Map<K, V> map, MapComparator<K, V> comp) {
 
   return keys;
 }
+
+typedef MapFinder<V> = bool Function(V);
+
+K findFirstBy<K, V>(Map<K, V> map, MapFinder<V> finder) {
+  for (K key in map.keys) {
+    if (finder(map[key])) return key;
+  }
+
+  return null;
+}
+
+extension ListCompaction<T> on List<T> {
+  List<T> compact() {
+    List<T> ret = [];
+
+    for (var val in this) if (val != null) ret.add(val);
+
+    return ret;
+  }
+}

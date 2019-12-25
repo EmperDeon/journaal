@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:journal/managers/journals.dart';
 import 'package:journal/models/journal.dart';
-import 'package:journal/screens/components/basic_drawer.dart';
 import 'package:journal/screens/base.dart';
 
 class JournalsScreen extends BaseScreen<JournalsManager> {
@@ -39,10 +38,6 @@ class JournalsScreen extends BaseScreen<JournalsManager> {
     else
       return null;
   }
-
-  // Screen Drawer
-  @override
-  BasicDrawer buildDrawer() => BasicDrawer(currentRoute: routeName);
 
   @override
   Widget buildFloatingButton(BuildContext c, JournalsManager manager) =>

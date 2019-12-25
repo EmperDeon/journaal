@@ -1,7 +1,6 @@
 import 'package:journal/managers/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
-import 'package:journal/util/scoped_logger.dart';
 import 'package:journal/util/storage.dart';
 import 'package:journal/util/utils.dart';
 import 'package:rxdart/rxdart.dart';
@@ -18,7 +17,6 @@ abstract class AppManager extends BaseManager {
 }
 
 class AppManagerImpl extends BaseManager
-    with ScopedLogger
     implements AppManager {
   Storage storage = sl<Storage>();
   SettingsModel settings = sl<SettingsModel>();

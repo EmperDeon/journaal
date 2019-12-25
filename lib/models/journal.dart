@@ -11,6 +11,7 @@ import 'package:journal/util/storable.dart';
 /// }
 ///
 class Journal with ScopedLogger implements Storable {
+  String name = '';
   DateTime date;
   List<JournalEntry> entries = [];
   List<String> tags = [];
@@ -26,6 +27,7 @@ class Journal with ScopedLogger implements Storable {
     if (object == null) return;
 
     if (object is Map<String, dynamic>) {
+      name = object['name'] ?? '';
       date = DateTime.fromMillisecondsSinceEpoch(object['date'] ?? 0);
       entries = JournalEntry.castFromList(object['entries']) ?? [];
       tags = List.castFrom<dynamic, String>(object['tags'] ?? []);
@@ -37,6 +39,7 @@ class Journal with ScopedLogger implements Storable {
   @override
   save() {
     return {
+      'name': name,
       'date': date?.millisecondsSinceEpoch,
       'entries': entries.map((entry) => entry.save()).toList(),
       'tags': tags,

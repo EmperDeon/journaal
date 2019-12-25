@@ -15,11 +15,14 @@
         "add": "Add",
         "save": "Save",
         "delete": "Delete",
-        "unlock": "Unlock"
+        "unlock": "Unlock",
+        "list": "List",
+        "lock": "Lock"
     },
     "snackbar": {
         "are_you_sure": "Are you sure ?",
-        "yes": "Yes"
+        "yes": "Yes",
+        "saved": "Saved"
     },
     "errors": {
         "unlock": {
@@ -53,6 +56,7 @@
         "password": "Password",
         "language": "Language",
         "passwordMode": "Locking mode",
+        "autoUnlock": "Auto unlock",
         "languages": {
             "en": "English",
             "ru": "Русский"

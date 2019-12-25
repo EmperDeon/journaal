@@ -7,6 +7,7 @@ import 'package:journal/models/base.dart';
 ///   password: string,
 ///   passwordHash: string,
 ///   passwordMode: string,
+///   autoUnlock: bool,
 ///   locale: string,
 /// }
 ///
@@ -16,6 +17,7 @@ abstract class SettingsModel {
 
   // Common
   String password, passwordMode, locale;
+  bool autoUnlock;
 
   bool lockingEnabled();
   bool checkPassword(String pass);
@@ -28,6 +30,7 @@ class SettingsModelImpl extends BaseModel<Map<String, dynamic>>
     implements SettingsModel {
   String password = '', passwordMode = 'none', _passwordHash = '';
   String locale;
+  bool autoUnlock = false;
 
   SettingsModelImpl() : super('settings', skeletonValue: {});
 
@@ -49,6 +52,7 @@ class SettingsModelImpl extends BaseModel<Map<String, dynamic>>
   Map<String, dynamic> toSubjectData() => {
         'lockingEnabled': lockingEnabled(),
         'passwordMode': passwordMode,
+        'autoUnlock': autoUnlock,
         'locale': locale
       };
 
@@ -58,6 +62,7 @@ class SettingsModelImpl extends BaseModel<Map<String, dynamic>>
       password = object['password'] ?? '';
       _passwordHash = object['password_hash'] ?? '';
       passwordMode = object['passwordMode'];
+      autoUnlock = object['autoUnlock'] ?? false;
       locale = object['locale'];
 
       if (locale == null || locale == '') locale = 'en';
@@ -76,6 +81,7 @@ class SettingsModelImpl extends BaseModel<Map<String, dynamic>>
       'password': password,
       'passwordMode': passwordMode,
       'password_hash': _passwordHash,
+      'autoUnlock': autoUnlock,
       'locale': locale
     };
   }

@@ -1,7 +1,8 @@
 import 'package:journal/presenters/base.dart';
+import 'package:journal/util/scoped_logger.dart';
 import 'package:rxdart/rxdart.dart';
 
-class BaseManager {
+class BaseManager with ScopedLogger {
   void dispose() {
     _scaffoldSubject.close();
   }

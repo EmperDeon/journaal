@@ -7,10 +7,10 @@ import 'package:rxdart/rxdart.dart';
 abstract class BaseModel<T> with ScopedLogger implements Storable {
   final Storage _storage = sl<Storage>();
   final String _storableKey;
-  final T skeletonValue;
 
-  BaseModel(this._storableKey, {this.skeletonValue}) {
-    _itemsSubject = new BehaviorSubject.seeded(skeletonValue);
+  BaseModel(this._storableKey, {T skeletonValue}) {
+    _itemsSubject = new BehaviorSubject();
+    _itemsSubject.add(skeletonValue);
     _storage.addReloadTarget(_storableKey, this);
   }
 

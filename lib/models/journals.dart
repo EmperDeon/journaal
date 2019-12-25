@@ -15,10 +15,11 @@ abstract class JournalsModel {
   Stream<Map<String, Journal>> get itemsStream;
 
   // CRUD
-  String create();
+  String create([DateTime date]);
   void destroy(String id);
   Journal operator [](String id);
   Journal at(String id);
+  String keyAtDate(DateTime date);
   void setJournalAt(String id, Journal value);
 
   bool hasDate(DateTime value);
@@ -35,9 +36,9 @@ class JournalsModelImpl extends BaseModel<Map<String, Journal>>
   //
 
   @override
-  String create() {
+  String create([DateTime date]) {
     String key = Uuid().v4();
-    Journal item = Journal(DateTime.now());
+    Journal item = Journal(date ?? DateTime.now());
 
     _items[key] = item;
     updateSubject();
@@ -62,14 +63,16 @@ class JournalsModelImpl extends BaseModel<Map<String, Journal>>
   }
 
   @override
+  String keyAtDate(DateTime date) => findFirstBy(_items, (v) => v.date == date);
+
+  @override
   void setJournalAt(String id, Journal value) {
     _items[id] = value;
     updateSubject();
   }
 
   @override
-  bool hasDate(DateTime value) =>
-      !allTrue(_items.values, (Journal val) => value != val.date);
+  bool hasDate(DateTime value) => !allTrue(_items.values, (Journal val) => value != val.date);
 
   //
   // Saving/Loading

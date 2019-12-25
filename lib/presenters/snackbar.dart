@@ -13,8 +13,8 @@ class SnackbarPresentation extends ScaffoldPresentation {
   SnackbarPresentation({
     @required this.type,
     @required this.contentTr,
-    @required this.action,
-    @required this.actionTr,
+    this.action,
+    this.actionTr,
   });
 
   Color backgroundColor() {
@@ -43,19 +43,19 @@ class SnackbarPresentation extends ScaffoldPresentation {
     }
   }
 
-  Duration duration() {
-    return Duration(seconds: 5);
-  }
+  Duration duration() => Duration(seconds: type == SnackbarType.Error ? 5 : 2);
 
   SnackBar toBar(BuildContext c) => SnackBar(
         backgroundColor: backgroundColor(),
         content: Text(I18n.t(c, contentTr)),
         duration: duration(),
-        action: SnackBarAction(
-          textColor: textColor(),
-          label: I18n.t(c, actionTr),
-          onPressed: action,
-        ),
+        action: action == null
+            ? null
+            : SnackBarAction(
+                textColor: textColor(),
+                label: I18n.t(c, actionTr),
+                onPressed: action,
+              ),
       );
 }
 
@@ -66,6 +66,14 @@ class SnackbarPresenter {
       contentTr: 'snackbar.are_you_sure',
       action: action,
       actionTr: 'snackbar.yes',
+    );
+  }
+
+  static ScaffoldPresentation saved() {
+    return SnackbarPresentation(
+      type: SnackbarType.Info,
+      contentTr: 'snackbar.saved',
+      action: null,
     );
   }
 }

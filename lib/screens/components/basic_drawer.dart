@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_version/get_version.dart';
+import 'package:journal/managers/app.dart';
+import 'package:journal/screens/components/locking_builder.dart';
 import 'package:journal/services.dart';
 import 'package:journal/services/i18n.dart';
 import 'package:journal/services/navigation_service.dart';
@@ -35,10 +37,16 @@ class BasicDrawer extends StatelessWidget {
                     color: theme.primaryColor,
                   ),
                 ),
-                buildTile(c, 'screens.notes', '/', Icons.list),
-                buildTile(c, 'screens.journals', '/journals',
+                LockingBuilder(
+                  enabledBuilder: (_) => buildActionTile(
+                      c, 'actions.lock', sl<AppManager>().lock, Icons.lock),
+                ),
+                LockingBuilder(enabledBuilder: (_) => Divider()),
+                buildRouteTile(c, 'screens.notes', '/', Icons.list),
+                buildRouteTile(c, 'screens.journals', '/journal',
                     Icons.format_list_numbered),
-                buildTile(c, 'screens.settings', '/settings', Icons.settings),
+                buildRouteTile(
+                    c, 'screens.settings', '/settings', Icons.settings),
               ],
             ),
           ),
@@ -48,7 +56,17 @@ class BasicDrawer extends StatelessWidget {
     );
   }
 
-  Widget buildTile(BuildContext c, String key, String path, IconData icon) {
+  Widget buildActionTile(
+      BuildContext c, String key, Function() action, IconData icon) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(I18n.t(c, key)),
+      onTap: action,
+    );
+  }
+
+  Widget buildRouteTile(
+      BuildContext c, String key, String path, IconData icon) {
     return ListTile(
       leading: Icon(icon),
       title: Text(I18n.t(c, key)),

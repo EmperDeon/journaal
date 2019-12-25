@@ -40,6 +40,7 @@ class App extends StatefulWidget with ScopedLogger {
     _AppState state, {
     Function generateRoute,
     navigatorKey,
+    initialRoute = '/',
     routes = const <String, WidgetBuilder>{},
   }) =>
       StreamBuilder(
@@ -86,6 +87,7 @@ class App extends StatefulWidget with ScopedLogger {
   Widget buildApp(_AppState state) {
     return buildMaterialApp(
       state,
+      initialRoute: sl<BuildEnv>().initialRoute,
       navigatorKey: sl<NavigationService>().navigatorKey,
       generateRoute: state.appGenerateRoute,
     );

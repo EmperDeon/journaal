@@ -4,28 +4,29 @@ import 'package:journal/models/settings.dart';
 import 'package:journal/services/navigation_service.dart';
 import 'package:journal/services.dart';
 import 'package:journal/managers/fields/rx_field.dart';
-import 'package:journal/util/scoped_logger.dart';
+import 'package:journal/util/build_env.dart';
 import 'package:journal/util/utils.dart';
 import 'package:rx_command/rx_command.dart';
 
 abstract class SettingsManager extends BaseManager {
   RxTextFieldManager passwordField;
   RxCommand<String, String> updateLocale, updatePasswordMode;
+  RxCommand<bool, bool> updateAutoUnlock;
 
   Stream<Map<String, dynamic>> get lockingDataStream;
 
   String get locale;
   String get passwordMode;
+  bool get autoUnlock;
 
   void save();
 }
 
-class SettingsManagerImpl extends BaseManager
-    with ScopedLogger
-    implements SettingsManager {
+class SettingsManagerImpl extends BaseManager implements SettingsManager {
   SettingsModel model = sl<SettingsModel>();
   RxTextFieldManager passwordField;
   String _locale, _passwordMode;
+  bool _autoUnlock;
 
   List<RxTextFieldManager> _fields;
 
@@ -34,13 +35,14 @@ class SettingsManagerImpl extends BaseManager
         initialValue: model.password, validateWith: passwordValidator);
 
     updateLocale = RxCommand.createSync<String, String>(_setLocale);
-    updatePasswordMode = RxCommand.createSync<String, String>(_setPasswordMode,
-        emitsLastValueToNewSubscriptions: true);
+    updatePasswordMode = RxCommand.createSync<String, String>(_setPasswordMode);
+    updateAutoUnlock = RxCommand.createSync<bool, bool>(_setAutoUnlock);
 
     _fields = [passwordField];
 
     updateLocale(model.locale);
     updatePasswordMode(model.passwordMode);
+    updateAutoUnlock(model.autoUnlock);
   }
 
   //
@@ -58,12 +60,15 @@ class SettingsManagerImpl extends BaseManager
 
   @override
   RxCommand<String, String> updateLocale, updatePasswordMode;
+  RxCommand<bool, bool> updateAutoUnlock;
 
   String get locale => _locale;
   String get passwordMode => _passwordMode;
+  bool get autoUnlock => _autoUnlock;
 
   String _setLocale(String l) => _locale = l;
   String _setPasswordMode(String mode) => _passwordMode = mode;
+  bool _setAutoUnlock(bool mode) => _autoUnlock = mode;
 
   String passwordValidator(String pass) =>
       (pass.length == 0 && _passwordMode != 'none')
@@ -90,12 +95,13 @@ class SettingsManagerImpl extends BaseManager
       model.password = passwordField.text;
       model.locale = _locale;
       model.passwordMode = _passwordMode;
+      model.autoUnlock = _autoUnlock;
 
       model.updateSubject();
 
       sl<AppManager>().unlockWith(model.password);
 
-      sl<NavigationService>().replaceWith('/journals');
+      sl<NavigationService>().replaceWith(sl<BuildEnv>().initialRoute);
     }
   }
 }
