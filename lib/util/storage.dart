@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:hive/hive.dart';
 import 'package:journal/models/base.dart';
 import 'package:journal/models/settings.dart';
 import 'package:journal/services.dart';
